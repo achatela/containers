@@ -20,7 +20,7 @@ namespace ft{
             typedef typename allocator_type::pointer pointer;
             typedef typename allocator_type::const_pointer const_pointer;
             typedef typename std::iterator_traits<T>::iterator iterator;
-            //typedef typename vector::const_iterator const_iterator;
+            typedef typename vector::const_iterator const_iterator;
             //typedef typename vector::reverse_iterator reverse_iterator;
             //typedef typename vector::const_reverse_iterator const_reverse_iterator;
             //typedef typename vector::difference_type difference_type;
