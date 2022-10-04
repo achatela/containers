@@ -17,16 +17,17 @@ namespace ft{
         public:
             typedef T   value_type;
             typedef Alloc allocator_type;
-            typedef typename allocator_type::reference reference;
-            typedef typename allocator_type::const_reference const_reference;
-            typedef typename allocator_type::pointer pointer;
-            typedef typename allocator_type::const_pointer const_pointer;
-            typedef typename std::deque<T>::iterator iterator;
-            typedef typename std::deque<T>::const_iterator const_iterator;
-            //typedef typename ft::iterator_traits<T>::iterator iterator;
-          //  typedef typename ft::iterator_traits<T>::const_iterator const_iterator;
-            //typedef typename vector::reverse_iterator reverse_iterator;
-            //typedef typename vector::const_reverse_iterator const_reverse_iterator;
+            typedef typename Alloc::reference reference;
+            typedef typename Alloc::const_reference const_reference;
+            typedef typename Alloc::pointer pointer;
+            typedef typename Alloc::const_pointer const_pointer;
+            //typedef typename std::deque<T>::iterator iterator;
+            //typedef typename std::deque<T>::const_iterator const_iterator;
+            typedef typename ft::iterator_traits<vector> iterator;
+            typedef typename ft::iterator_traits<vector> const_iterator;
+            // REPLACE WITH MY REVERSE_ITERATOR
+            typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
+            typedef typename std::reverse_iterator<iterator> reverse_iterator;
             typedef std::ptrdiff_t difference_type;
             typedef std::size_t size_type;
 
@@ -44,10 +45,26 @@ namespace ft{
             };
 
             explicit vector (size_type n, const value_type& val = value_type(),
-                const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(n), _capacity(n + (n / 2)){
+                const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(n + (n / 2)){
                 _vector = _alloc.allocate(_capacity);
-                (void)val;
+                size_type index = -1;
+                while (++index != n){
+                    push_back(val);
+                }
             };
+
+            // Used instead of the above constructor by default 
+            // template <class InputIterator>
+            // vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()){
+            //     (void)first;
+            //     (void)last;
+            //     (void)alloc;
+            // };
+
+            vector (const vector& x){
+                (void)x;
+            };
+
 
             ~vector(){
                 //?
@@ -62,7 +79,7 @@ namespace ft{
         // Iterators
 
             iterator begin(){
-                return iterator(this->)
+                return iterator(*_vector);
             };
             
             const_iterator begin() const{
@@ -176,7 +193,7 @@ namespace ft{
               //return std::__addressof(front());
             }
 
-            A VOIR MAIS PAS C++98 ASKIP
+            A VOIR MAIS PAS C++98 
 
             const value_type* data() _GLIBCXX_NOEXCEPT{
               //return std::__addressof(front());
@@ -193,11 +210,16 @@ namespace ft{
             };
 
             void push_back (const value_type& val){
-                (void)val;
+                // need to handle not enough space
+                // if (_size + 1 >= _capacity)
+                _vector[_size++] = val;
             };
-
+    
             void pop_back(){
+                Alloc _alloc;
 
+                _alloc.destroy(_vector + _size);
+                _size--;
             };
 
             iterator insert (iterator position, const value_type& val){
