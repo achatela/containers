@@ -2,11 +2,12 @@
 # define VECTOR_HPP
 
 # include <iostream>
-# include <bits/stl_deque.h>
+# include <stdexcept>
+//# include <bits/stl_deque.h>
 # include "iterator_traits.hpp"
-#include <bits/stl_iterator_base_funcs.h>
-#include <bits/functexcept.h>
-#include <bits/concept_check.h>
+//#include <bits/stl_iterator_base_funcs.h>
+//#include <bits/functexcept.h>
+//#include <bits/concept_check.h>
 
 
 
@@ -17,10 +18,10 @@ namespace ft{
         public:
             typedef T   value_type;
             typedef Alloc allocator_type;
-            typedef typename Alloc::reference reference;
-            typedef typename Alloc::const_reference const_reference;
-            typedef typename Alloc::pointer pointer;
-            typedef typename Alloc::const_pointer const_pointer;
+            typedef typename allocator_type::reference reference;
+            typedef typename allocator_type::const_reference const_reference;
+            typedef typename allocator_type::pointer pointer;
+            typedef typename allocator_type::const_pointer const_pointer;
             //typedef typename std::deque<T>::iterator iterator;
             //typedef typename std::deque<T>::const_iterator const_iterator;
             typedef typename ft::iterator_traits<vector> iterator;
@@ -67,7 +68,7 @@ namespace ft{
 
 
             ~vector(){
-                //?
+                _alloc.deallocate(_vector, _capacity);
             };
 
             vector& operator=(const vector& x){
@@ -79,31 +80,53 @@ namespace ft{
         // Iterators
 
             iterator begin(){
-                return iterator(*_vector);
+                return iterator(_vector);
             };
             
             const_iterator begin() const{
-
+                return const_iterator(_vector);
             };
 
+            iterator end(){
+                return iterator(&_vector[_size]);
+            };
 
-        // Capacity
+            const_iterator end() const {
+                return const_iterator(&_vector[_size]);
+            }
+
+            reverse_iterator rbegin(){
+                return reverse_iterator(&_vector[_size - 1]);
+            };
+
+            const_reverse_iterator rbegin() const{
+                return const_reverse_iterator(&_vector[_size - 1]);
+            };
+
+            reverse_iterator rend(){
+                return reverse_iterator(_vector - 1);
+            };
+
+            const_reverse_iterator rend() const{
+                return const_reverse_iterator(_vector - 1);
+            };
+
+        // Capacity: Done ! (manque tests)
             size_type size() const{
-                return _size; // should be iterator start - iterator end
+                return _size;
             };
 
             size_type max_size() const{
-                return _capacity;
+                return _alloc.max_size();
             };
 
             void resize (size_type n, value_type val = value_type()){
-                if (_size < n){
-                    (void)n; // use insert function
-                }
-                else if (_size > n){
-                    (void)n; // erase the elements higher than n
-                }
-                (void)val;
+                while (n < _size)
+                    pop_back();
+                if (n > _size)
+                    reserve(n);
+                while (n > _size)
+                    push_back(val);
             };
 
             size_type capacity() const{
@@ -111,50 +134,50 @@ namespace ft{
             };
             
             bool empty() const{
-                // temporaire
                 if (_size == 0)
                     return true;
                 else
                     return false;
-                //return (begin() == end());
             };
 
             void reserve (size_type n){
-                if (n > capacity()){
-                    if (n > max_size())
-                        ;   //throw error
-                    ;
-                    //allocator_type& a = this->_alloc();
-                    /*        __split_buffer<value_type, allocator_type&> __v(__n, size(), __a);
-                                __swap_out_circular_buffer(__v); ? ? ?
-                    */
+                if (n > this->max_size())
+                    throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
+                if (n <= _capacity)
+                    return ;
+                pointer _new;
+                _new = _alloc.allocate(n);
+                for (size_t i = 0; i < _size; i++){
+                    _new[i] = _vector[i];
                 }
+                _alloc.deallocate(_vector, _capacity);
+                _vector = _new;
+                _capacity = n;
             };
 
-            // Element access
+            // Element access: Done !
 
             /* Operator[] out of the range is not defined
             */
 
             reference operator[] (size_type n){
-                return *(/*iterator begin*/this->_vector + n);
+                return *(this->_vector + n);
             };
             
             const_reference operator[] (size_type n) const{
-                // need to throw exception
-                return *(/*iterator begin*/this->_vector + n);
+                return *(this->_vector + n);
             };
 
             reference at (size_type n){
                 if (n >= this->size()){
-                    std::cout << "Range check exception" << std::endl;
+                    throw std::out_of_range("out of range");
                 }
                 return (*this)[n];
             };
             
             const_reference at (size_type n) const{
                 if (n >= this->size()){
-                    std::cout << "Range check exception" << std::endl;
+                    throw std::out_of_range("out of range");
                 }
                 return (*this)[n];
             };
@@ -163,14 +186,10 @@ namespace ft{
             */
            
             reference front(){
-                //When iterators are working
-                // return *begin();
                 return (*this)[0];
             };
             
             const_reference front() const{
-                //When iterators are working
-                // return *begin();
                 return (*this)[0];
             };
 
@@ -178,26 +197,12 @@ namespace ft{
             */
 
             reference back(){
-                //When iterators are working
-                // return *(end() - 1);
                 return (*this)[_size - 1];
             };
             
             const_reference back() const{
-                //When iterators are working
-                // return *(end() - 1);
                 return (*this)[_size - 1];
             };
-
-            /*value_type* data() _GLIBCXX_NOEXCEPT{;
-              //return std::__addressof(front());
-            }
-
-            A VOIR MAIS PAS C++98 
-
-            const value_type* data() _GLIBCXX_NOEXCEPT{
-              //return std::__addressof(front());
-            };*/
 
             // Modifiers
 
@@ -210,14 +215,15 @@ namespace ft{
             };
 
             void push_back (const value_type& val){
-                // need to handle not enough space
-                // if (_size + 1 >= _capacity)
+                // A VERIF
+                if (_size + 1 > _capacity)
+                    reserve(_capacity + (_capacity / 2));
                 _vector[_size++] = val;
             };
     
             void pop_back(){
-                Alloc _alloc;
 
+                //gérer segfault quand _size == 0
                 _alloc.destroy(_vector + _size);
                 _size--;
             };
@@ -245,10 +251,14 @@ namespace ft{
 
             void swap (vector& x){
                 (void)x;
+                //vector tmp(x);
+                //x = *this;
+                //*this = tmp;
             };
 
             void clear(){
-                ;
+                while (_size != 0)
+                    pop_back();
             };
     };
 }

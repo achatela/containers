@@ -7,7 +7,7 @@
  int main (void){
     //std::vector<int> vectorTest2(3, 4);
 //     ft::vector<int> vectorTest;
-     ft::vector<int> vectorTest2(3, 4);
+    ft::vector<int> vectorTest2(3, 4);
     //ft::vector<int>::iterator it;
     //std::vector<int> vectorTest;
 
@@ -34,7 +34,12 @@
     std::cout << vectorTest2.back() << std::endl;
     std::cout << vectorTest2.front() << std::endl;
     vectorTest2.pop_back();
-    std::cout << vectorTest2[3] << std::endl;
-    std::cout << vectorTest2.size() << std::endl;
+    std::cout << vectorTest2.front() << std::endl;
+    std::cout << vectorTest2.max_size() << std::endl;
+    vectorTest2.reserve(200);
+    std::cout << vectorTest2.front() << std::endl;
+    std::cout << vectorTest2.capacity() << std::endl;
+    vectorTest2.reserve(203);
+    std::cout << vectorTest2.capacity() << std::endl;
     return (0);
 }
