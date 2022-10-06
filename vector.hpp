@@ -3,8 +3,11 @@
 
 # include <iostream>
 # include <stdexcept>
+# include <iterator>
 //# include <bits/stl_deque.h>
 # include "iterator_traits.hpp"
+# include "random_access.hpp"
+# include "reverse_iterator.hpp"
 //#include <bits/stl_iterator_base_funcs.h>
 //#include <bits/functexcept.h>
 //#include <bits/concept_check.h>
@@ -22,13 +25,10 @@ namespace ft{
             typedef typename allocator_type::const_reference const_reference;
             typedef typename allocator_type::pointer pointer;
             typedef typename allocator_type::const_pointer const_pointer;
-            //typedef typename std::deque<T>::iterator iterator;
-            //typedef typename std::deque<T>::const_iterator const_iterator;
-            typedef typename ft::iterator_traits<vector> iterator;
-            typedef typename ft::iterator_traits<vector> const_iterator;
-            // REPLACE WITH MY REVERSE_ITERATOR
+            typedef typename ft::Iterator<pointer> iterator;
+            typedef typename ft::iterator_traits<vector*> const_iterator;
+            typedef typename ft::reverseIterator<pointer> reverse_iterator;
             typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
-            typedef typename std::reverse_iterator<iterator> reverse_iterator;
             typedef std::ptrdiff_t difference_type;
             typedef std::size_t size_type;
 
@@ -80,9 +80,9 @@ namespace ft{
         // Iterators
 
             iterator begin(){
-                return iterator(_vector);
+                return iterator(this->_vector);
             };
-            
+
             const_iterator begin() const{
                 return const_iterator(_vector);
             };
@@ -93,7 +93,7 @@ namespace ft{
 
             const_iterator end() const {
                 return const_iterator(&_vector[_size]);
-            }
+            };
 
             reverse_iterator rbegin(){
                 return reverse_iterator(&_vector[_size - 1]);
@@ -210,6 +210,7 @@ namespace ft{
             void assign (InputIterator first, InputIterator last){
                 (void)first, last;
             };
+            
             void assign (size_type n, const value_type& val){
                 (void)n, val;
             };

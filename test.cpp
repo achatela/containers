@@ -3,11 +3,17 @@
 #include <vector>
 #include "iterator_traits.hpp"
 #include "vector.hpp"
+#include "random_access.hpp"
+#include "reverse_iterator.hpp"
 
  int main (void){
     //std::vector<int> vectorTest2(3, 4);
 //     ft::vector<int> vectorTest;
-    ft::vector<int> vectorTest2(3, 4);
+    ft::vector<int> vectorTest2(20, 4);
+    ft::vector<int>::reverse_iterator rit = vectorTest2.rbegin();
+    ft::vector<int>::reverse_iterator rite = vectorTest2.rend();
+    ft::vector<int>::iterator ite = vectorTest2.end();
+    ft::vector<int>::iterator it = vectorTest2.begin();
     //ft::vector<int>::iterator it;
     //std::vector<int> vectorTest;
 
@@ -25,7 +31,16 @@
     // std::cout << vectorTest[1] << std::endl;
 
 
-
+    while (it != ite){
+        std::cout << *it << " ";
+        it++;
+    }
+    std::cout << std::endl;
+    while (rit != rite){
+        std::cout << *rit << " ";
+        rit--;
+    }
+    std::cout << std::endl;
     std::cout << vectorTest2.size() << std::endl;
     std::cout << vectorTest2[0] << std::endl;
     std::cout << vectorTest2[1] << std::endl;
