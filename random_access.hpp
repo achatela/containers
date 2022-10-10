@@ -10,35 +10,42 @@ namespace ft
     class Iterator : public std::iterator<std::random_access_iterator_tag, T>
     {
         public:
-            typedef T													value_type;
+			typedef T													iterator_type;
+		    typedef typename ft::iterator_traits<T>::value_type			value_type;
             typedef typename ft::iterator_traits<T>::difference_type 	difference_type;
             typedef typename ft::iterator_traits<T>::pointer         	pointer;
 			typedef typename ft::iterator_traits<T>::reference			reference;
-            Iterator() : _ptr(NULL){};
+			typedef typename ft::iterator_traits<T>::iterator_category  iterator_category;
+            Iterator() : current(NULL){};
 
-			explicit Iterator(pointer it) : _ptr(it){};
+			explicit Iterator(pointer it) : current(it){};
             
 			template <class iter>
-			Iterator (const Iterator<iter> & it) : _ptr(it.base()){};
+			Iterator (const Iterator<iter> & it) : current(it.base()){};
 
 			~Iterator(){};
 
+        private:
+            pointer current;
+
+		public:
+
 			reference operator*() const{
-				return *_ptr;
+				return *current;
 			};
 
 			value_type base() const{
-				return this->_ptr;
+				return current;
 			};
 
 			Iterator operator+ (difference_type n) const{
 				Iterator tmp = *this;
-				tmp._ptr += n;
+				tmp.current += n;
 				return tmp;
 			};
 
 			Iterator& operator++(){
-				this->_ptr++;
+				current++;
 				return *this;
 			};
             
@@ -49,23 +56,23 @@ namespace ft
 			};
             
 			Iterator& operator+= (difference_type n){
-				this->_ptr += n;
+				current += n;
 				return (*this);
 			};
 
 			Iterator& operator-= (difference_type n){
-				this->_ptr -= n;
+				current -= n;
 				return (*this);
 			};
 
 			Iterator operator- (difference_type n) const{
 				Iterator tmp = *this;
-				tmp._ptr -= n;
+				tmp.current -= n;
 				return tmp;
 			};
 
 			Iterator& operator--(){
-				this->_ptr--;
+				current--;
 				return *this;
 			};
 
@@ -80,37 +87,37 @@ namespace ft
 			};
 
 			reference operator[] (difference_type n) const{
-				return *(_ptr + n);
+				return *(current + n);
 			};
 
 			template <class _Tp, class __Tp>
 			friend bool operator==(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._ptr == rhs._ptr);
+				return (lhs.current == rhs.current);
 			};
 
 			template <class _Tp, class __Tp>
 			friend bool operator!=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._ptr != rhs._ptr);
+				return (lhs.current != rhs.current);
 			};
 
 			template <class _Tp, class __Tp>
 			friend bool operator<(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._ptr < rhs._ptr);
+				return (lhs.current < rhs.current);
 			};
 
 			template <class _Tp, class __Tp>
 			friend bool operator<=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._ptr <= rhs._ptr);
+				return (lhs.current <= rhs.current);
 			};
             
 			template <class _Tp, class __Tp>
 			friend bool operator>(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._ptr > rhs._ptr);
+				return (lhs.current > rhs.current);
 			};
 
 			template <class _Tp, class __Tp>
 			friend bool operator>=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._ptr >= rhs._ptr);
+				return (lhs.current >= rhs.current);
 			};
 
 			template <class _Tp>
@@ -120,11 +127,8 @@ namespace ft
             
 			template <class _Tp, class __Tp>
 			friend typename Iterator<_Tp>::difference_type operator- (const Iterator<_Tp>& lhs, const Iterator<__Tp>& rhs){
-				return lhs._ptr - rhs._ptr;
+				return lhs.current - rhs.current;
 			};
-
-        private:
-            pointer _ptr;
     };
 };
 

@@ -4,6 +4,7 @@
 # include <iostream>
 # include <stdexcept>
 # include <iterator>
+# include <utility>
 //# include <bits/stl_deque.h>
 # include "iterator_traits.hpp"
 # include "random_access.hpp"
@@ -26,8 +27,8 @@ namespace ft{
             typedef typename allocator_type::pointer pointer;
             typedef typename allocator_type::const_pointer const_pointer;
             typedef typename ft::Iterator<pointer> iterator;
-            typedef typename ft::iterator_traits<vector*> const_iterator;
-            typedef typename ft::reverseIterator<pointer> reverse_iterator;
+            typedef typename ft::iterator_traits<T> const_iterator;
+            typedef typename ft::reverse_iterator<pointer> reverse_iterator;
             typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
             typedef std::ptrdiff_t difference_type;
             typedef std::size_t size_type;
@@ -62,8 +63,13 @@ namespace ft{
             //     (void)alloc;
             // };
 
-            vector (const vector& x){
-                (void)x;
+            vector (const vector& x): _alloc(x._alloc), _size(x._size), _capacity(x._capacity){
+                _vector = _alloc.allocate(_capacity);
+				for (size_type i = 0; i < x._size; i++)
+                {
+					push_back(x._vector[i]);
+                    _size--;
+                }
             };
 
 
@@ -72,7 +78,8 @@ namespace ft{
             };
 
             vector& operator=(const vector& x){
-                this->assign(x.begin(), x.end());
+                (void)x;
+                //assign(x.begin(), x.end());
                 return *this;
             };
 
@@ -80,7 +87,7 @@ namespace ft{
         // Iterators
 
             iterator begin(){
-                return iterator(this->_vector);
+                return iterator(_vector);
             };
 
             const_iterator begin() const{
@@ -88,19 +95,19 @@ namespace ft{
             };
 
             iterator end(){
-                return iterator(&_vector[_size]);
+                return iterator(_vector + _size);
             };
 
             const_iterator end() const {
-                return const_iterator(&_vector[_size]);
+                return const_iterator(_vector + _size);
             };
 
             reverse_iterator rbegin(){
-                return reverse_iterator(&_vector[_size - 1]);
+                return reverse_iterator(_vector + (_size - 1));
             };
 
             const_reverse_iterator rbegin() const{
-                return const_reverse_iterator(&_vector[_size - 1]);
+                return const_reverse_iterator(_vector + (_size - 1));
             };
 
             reverse_iterator rend(){
@@ -108,7 +115,7 @@ namespace ft{
             };
 
             const_reverse_iterator rend() const{
-                return const_reverse_iterator(_vector - 1);
+                return const_reverse_iterator(_vector);
             };
 
         // Capacity: Done ! (manque tests)
@@ -141,7 +148,7 @@ namespace ft{
             };
 
             void reserve (size_type n){
-                if (n > this->max_size())
+                if (n > max_size())
                     throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
                 if (n <= _capacity)
                     return ;
@@ -161,22 +168,22 @@ namespace ft{
             */
 
             reference operator[] (size_type n){
-                return *(this->_vector + n);
+                return *(_vector + n);
             };
             
             const_reference operator[] (size_type n) const{
-                return *(this->_vector + n);
+                return *(_vector + n);
             };
 
             reference at (size_type n){
-                if (n >= this->size()){
+                if (n >= size()){
                     throw std::out_of_range("out of range");
                 }
                 return (*this)[n];
             };
             
             const_reference at (size_type n) const{
-                if (n >= this->size()){
+                if (n >= size()){
                     throw std::out_of_range("out of range");
                 }
                 return (*this)[n];
@@ -218,7 +225,7 @@ namespace ft{
             void push_back (const value_type& val){
                 // A VERIF
                 if (_size + 1 > _capacity)
-                    reserve(_capacity + (_capacity / 2));
+                    reserve(_capacity + (_capacity / 2) + 1);
                 _vector[_size++] = val;
             };
     
@@ -251,10 +258,11 @@ namespace ft{
             };
 
             void swap (vector& x){
-                (void)x;
-                //vector tmp(x);
-                //x = *this;
-                //*this = tmp;
+                std::swap(x, *this);
+                /*vector tmp(x);
+                
+                x = *this;
+                *this = tmp;*/
             };
 
             void clear(){
