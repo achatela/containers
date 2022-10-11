@@ -11,8 +11,6 @@
     //std::vector<int> vectorTest;
     ft::vector<int> vectorTest2(20, 4);
     vectorTest2.push_back(100);
-    ft::vector<int>::reverse_iterator rit = vectorTest2.rbegin();
-    ft::vector<int>::reverse_iterator rite = vectorTest2.rend();
     ft::vector<int>::iterator ite = vectorTest2.end();
     ft::vector<int>::iterator it = vectorTest2.begin();
     //std::vector<int>::iterator it;
@@ -35,13 +33,27 @@
         std::cout << *it << " ";
         it++;
     }
+    it--;
+    std::cout << std::endl << "returned iterator = " << *vectorTest2.insert(it, 1) << std::endl;
+    it = vectorTest2.begin();
+    ite = vectorTest2.end();
+    while (it != ite){
+        std::cout << *it << " ";
+        it++;
+    }
     std::cout << std::endl;
+    vectorTest2.assign(10, 20);
+    ft::vector<int>::reverse_iterator rit = vectorTest2.rbegin();
+    ft::vector<int>::reverse_iterator rite = vectorTest2.rend();
     while (rit != rite){
         std::cout << *rit << " ";
         rit++;
     }
+    // for (int i = 0; i < 200; i++)
+    //     vectorTest2.pop_back();
     std::cout << std::endl;
     std::cout << vectorTest2.size() << std::endl;
+    std::cout << vectorTest2.capacity() << std::endl;
     std::cout << vectorTest2[0] << std::endl;
     std::cout << vectorTest2[1] << std::endl;
     std::cout << vectorTest2[2] << std::endl;
@@ -57,9 +69,9 @@
     vectorTest2.reserve(203);
     std::cout << vectorTest2.capacity() << std::endl;
 
-    ft::vector<int>().swap(vectorTest2);
-    std::cout << vectorTest2[0] << std::endl;
-    std::cout << vectorTest2[1] << std::endl;
-    std::cout << vectorTest2[22] << std::endl;
+    ft::vector<int> test = vectorTest2;
+    std::cout << test[0] << std::endl;
+    std::cout << test[1] << std::endl;
+    std::cout << test[20] << std::endl;
     return (0);
 }

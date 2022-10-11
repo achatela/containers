@@ -84,10 +84,8 @@ int main(int argc, char** argv) {
 	}
 	catch(const std::exception& e)
 	{
-		//NORMAL ! :P
+		std::cout << "e" << std::endl;
 	}
-	
-	
 	// for (int i = 0; i < COUNT; ++i)
 	// {
 	// 	map_int.insert(ft::make_pair(rand(), rand()));

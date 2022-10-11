@@ -7,7 +7,7 @@
 namespace ft
 {
     template<typename T>
-    class Iterator : public std::iterator<std::random_access_iterator_tag, T>
+    class Iterator// : public std::iterator<std::random_access_iterator_tag, T>
     {
         public:
 			typedef T													iterator_type;
@@ -16,36 +16,41 @@ namespace ft
             typedef typename ft::iterator_traits<T>::pointer         	pointer;
 			typedef typename ft::iterator_traits<T>::reference			reference;
 			typedef typename ft::iterator_traits<T>::iterator_category  iterator_category;
-            Iterator() : current(NULL){};
+            Iterator() : _current(NULL){};
 
-			explicit Iterator(pointer it) : current(it){};
+			explicit Iterator(pointer it) : _current(it){};
             
 			template <class iter>
-			Iterator (const Iterator<iter> & it) : current(it.base()){};
+			Iterator (const Iterator<iter> & it) : _current(it.base()){};
 
 			~Iterator(){};
 
         private:
-            pointer current;
+            pointer _current;
 
 		public:
 
+			operator Iterator<const T>() const{
+				Iterator<const T> citer(_current);
+				return citer;
+			}
+
 			reference operator*() const{
-				return *current;
+				return *_current;
 			};
 
 			value_type base() const{
-				return current;
+				return _current;
 			};
 
 			Iterator operator+ (difference_type n) const{
 				Iterator tmp = *this;
-				tmp.current += n;
+				tmp._current += n;
 				return tmp;
 			};
 
 			Iterator& operator++(){
-				current++;
+				_current++;
 				return *this;
 			};
             
@@ -56,23 +61,23 @@ namespace ft
 			};
             
 			Iterator& operator+= (difference_type n){
-				current += n;
+				_current += n;
 				return (*this);
 			};
 
 			Iterator& operator-= (difference_type n){
-				current -= n;
+				_current -= n;
 				return (*this);
 			};
 
 			Iterator operator- (difference_type n) const{
 				Iterator tmp = *this;
-				tmp.current -= n;
+				tmp._current -= n;
 				return tmp;
 			};
 
 			Iterator& operator--(){
-				current--;
+				_current--;
 				return *this;
 			};
 
@@ -87,37 +92,37 @@ namespace ft
 			};
 
 			reference operator[] (difference_type n) const{
-				return *(current + n);
+				return *(_current + n);
 			};
 
 			template <class _Tp, class __Tp>
 			friend bool operator==(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs.current == rhs.current);
-			};
+				return (lhs._current == rhs._current);
+			}
 
 			template <class _Tp, class __Tp>
 			friend bool operator!=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs.current != rhs.current);
-			};
+				return (lhs._current != rhs._current);
+			}
 
 			template <class _Tp, class __Tp>
 			friend bool operator<(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs.current < rhs.current);
-			};
+				return (lhs._current < rhs._current);
+			}
 
 			template <class _Tp, class __Tp>
 			friend bool operator<=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs.current <= rhs.current);
+				return (lhs._current <= rhs._current);
 			};
             
 			template <class _Tp, class __Tp>
 			friend bool operator>(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs.current > rhs.current);
+				return (lhs._current > rhs._current);
 			};
 
 			template <class _Tp, class __Tp>
 			friend bool operator>=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs.current >= rhs.current);
+				return (lhs._current >= rhs._current);
 			};
 
 			template <class _Tp>
@@ -127,7 +132,7 @@ namespace ft
             
 			template <class _Tp, class __Tp>
 			friend typename Iterator<_Tp>::difference_type operator- (const Iterator<_Tp>& lhs, const Iterator<__Tp>& rhs){
-				return lhs.current - rhs.current;
+				return lhs._current - rhs._current;
 			};
     };
 };
