@@ -13,6 +13,7 @@
     vectorTest2.push_back(100);
     ft::vector<int>::iterator ite = vectorTest2.end();
     ft::vector<int>::iterator it = vectorTest2.begin();
+    const ft::vector<int>::const_iterator cit = vectorTest2.begin();
     //std::vector<int>::iterator it;
     //std::vector<int> vectorTest;
     // std::cout << vectorTest.size() << std::endl;
@@ -29,6 +30,7 @@
     // std::cout << vectorTest[1] << std::endl;
 
 
+    (void)cit;
     while (it != ite){
         std::cout << *it << " ";
         it++;

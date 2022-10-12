@@ -7,40 +7,43 @@
 namespace ft
 {
     template<typename T>
-    class Iterator// : public std::iterator<std::random_access_iterator_tag, T>
+    class Iterator
     {
         public:
 			typedef T													iterator_type;
-		    typedef typename ft::iterator_traits<T>::value_type			value_type;
-            typedef typename ft::iterator_traits<T>::difference_type 	difference_type;
-            typedef typename ft::iterator_traits<T>::pointer         	pointer;
-			typedef typename ft::iterator_traits<T>::reference			reference;
-			typedef typename ft::iterator_traits<T>::iterator_category  iterator_category;
+		    typedef typename ft::iterator_traits<T*>::value_type			value_type;
+            typedef typename ft::iterator_traits<T*>::difference_type 	difference_type;
+            typedef typename ft::iterator_traits<T*>::pointer         	pointer;
+			typedef typename ft::iterator_traits<T*>::reference			reference;
+			typedef typename ft::iterator_traits<T*>::iterator_category  iterator_category;
             Iterator() : _current(NULL){};
 
 			explicit Iterator(pointer it) : _current(it){};
             
 			template <class iter>
-			Iterator (const Iterator<iter> & it) : _current(it.base()){};
+			Iterator (const Iterator<iter> & it) : _current(it.get_pointer()){};
 
 			~Iterator(){};
+			
+			operator Iterator<const T>() const{
+				return (Iterator<T const>(this->_current));
+			}
 
         private:
             pointer _current;
 
 		public:
 
-			operator Iterator<const T>() const{
-				Iterator<const T> citer(_current);
-				return citer;
-			}
+			pointer get_pointer() const{
+				return _current;
+			}	
 
 			reference operator*() const{
 				return *_current;
 			};
 
 			value_type base() const{
-				return _current;
+				return *_current;
 			};
 
 			Iterator operator+ (difference_type n) const{
@@ -95,46 +98,46 @@ namespace ft
 				return *(_current + n);
 			};
 
+    };
 			template <class _Tp, class __Tp>
-			friend bool operator==(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._current == rhs._current);
+			bool operator==(const ft::Iterator<_Tp> lhs, const ft::Iterator<__Tp> rhs){
+				return (*lhs.get_pointer() == *rhs.get_pointer());
 			}
 
 			template <class _Tp, class __Tp>
-			friend bool operator!=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._current != rhs._current);
+			 bool operator!=(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
+				return (lhs.get_pointer() != rhs.get_pointer());
 			}
 
 			template <class _Tp, class __Tp>
-			friend bool operator<(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._current < rhs._current);
+			 bool operator<(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
+				return (lhs.get_pointer() < rhs.get_pointer());
 			}
 
 			template <class _Tp, class __Tp>
-			friend bool operator<=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._current <= rhs._current);
+			 bool operator<=(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
+				return (lhs.get_pointer() <= rhs.get_pointer());
 			};
             
 			template <class _Tp, class __Tp>
-			friend bool operator>(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._current > rhs._current);
+			 bool operator>(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
+				return (lhs.get_pointer() > rhs.get_pointer());
 			};
 
 			template <class _Tp, class __Tp>
-			friend bool operator>=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
-				return (lhs._current >= rhs._current);
+			 bool operator>=(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
+				return (lhs.get_pointer() >= rhs.get_pointer());
 			};
 
 			template <class _Tp>
-			friend Iterator<_Tp> operator+ (typename Iterator<_Tp>::difference_type n, const Iterator<_Tp>& rev_it){
+			 Iterator<_Tp> operator+ (typename Iterator<_Tp>::difference_type n, const Iterator<_Tp>& rev_it){
 				return rev_it + n;
 			};
             
 			template <class _Tp, class __Tp>
-			friend typename Iterator<_Tp>::difference_type operator- (const Iterator<_Tp>& lhs, const Iterator<__Tp>& rhs){
-				return lhs._current - rhs._current;
+			 typename Iterator<_Tp>::difference_type operator- (const Iterator<_Tp>&lhs, const Iterator<__Tp>&rhs){
+				return lhs.get_pointer() - rhs.get_pointer();
 			};
-    };
 };
 
 #endif

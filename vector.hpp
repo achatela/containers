@@ -27,10 +27,10 @@ namespace ft{
             typedef typename allocator_type::const_reference const_reference;
             typedef typename allocator_type::pointer pointer;
             typedef typename allocator_type::const_pointer const_pointer;
-            typedef typename ft::Iterator<pointer> iterator;
-            typedef typename ft::Iterator<const_pointer> const_iterator;
-            typedef typename std::reverse_iterator<pointer> reverse_iterator;
-            typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
+            typedef typename ft::Iterator<T> iterator;
+            typedef typename ft::Iterator<const T> const_iterator;
+            typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+            typedef typename ft::reverse_iterator<const iterator> const_reverse_iterator;
             typedef std::ptrdiff_t difference_type;
             typedef std::size_t size_type;
 
@@ -47,6 +47,7 @@ namespace ft{
                 _vector = _alloc.allocate(_capacity);
             };
 
+
             explicit vector (size_type n, const value_type& val = value_type(),
                 const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(n * 2){
                 _vector = _alloc.allocate(_capacity);
@@ -56,23 +57,13 @@ namespace ft{
                 }
             };
 
-            template<typename Test>
-            struct is_iterator<iterator> {
-                static const bool value = true;
-            };
-
-            template<typename Test>
-            struct is_iterator {
-                static const bool value = false;
-            };
-
-            template <class InputIterator>
-            vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-                typename enable_if<is_iterator<InputIterator>::type, InputIterator>::type* = 0){
-                (void)first;
-                (void)last;
-                (void)alloc;
-            };
+            // template <class InputIterator>
+            // vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+            //     typename enable_if<is_iterator<InputIterator>::type, InputIterator>::type* = 0){
+            //     (void)first;
+            //     (void)last;
+            //     (void)alloc;
+            // };
 
             vector (const vector& x): _alloc(x._alloc), _size(0), _capacity(x._capacity){
                 _vector = _alloc.allocate(_capacity);
@@ -259,6 +250,8 @@ namespace ft{
             };
     
             void pop_back(){
+                if (_size == 0)
+                    return ;
                 _alloc.destroy(_vector + _size);
                 _size--;
             };
