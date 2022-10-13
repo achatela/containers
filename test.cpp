@@ -1,10 +1,10 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#include "iterator_traits.hpp"
+#include "utils/iterator_traits.hpp"
 #include "vector.hpp"
-#include "random_access.hpp"
-#include "reverse_iterator.hpp"
+#include "utils/random_access.hpp"
+#include "utils/reverse_iterator.hpp"
 
  int main (void){
     //std::vector<int> vectorTest2(3, 4);
