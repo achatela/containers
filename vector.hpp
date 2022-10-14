@@ -31,7 +31,7 @@ namespace ft{
             typedef typename ft::Iterator<T> iterator;
             typedef typename ft::Iterator<const T> const_iterator;
             typedef typename ft::reverse_iterator<iterator> reverse_iterator; // ou <iterator> et enlever * dans reverse_iterator.hpp
-            typedef typename ft::reverse_iterator<const iterator> const_reverse_iterator; // ou <iterator> et enlever * dans reverse_iterator.hpp
+            typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator; // ou <iterator> et enlever * dans reverse_iterator.hpp
             typedef std::ptrdiff_t difference_type;
             typedef std::size_t size_type;
 
@@ -62,6 +62,7 @@ namespace ft{
             vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
                  typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL):
                  _alloc(alloc), _size(0), _capacity(1){
+                _vector = _alloc.allocate(_capacity);
                 while (first != last){
                     push_back(*first);
                     first++;
@@ -231,6 +232,10 @@ namespace ft{
             template <class InputIterator> 
             void assign (InputIterator first, InputIterator last,
                 typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL){
+                for (size_type i = 0; i != _size; i++){
+                    _alloc.destroy(_vector + i);
+                }
+                _size = 0;
                 while (first != last){
                     push_back(*first);
                     first++;
@@ -311,9 +316,28 @@ namespace ft{
             template <class InputIterator>
             void insert (iterator position, InputIterator first, InputIterator last,
                 typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL){
-                (void)position;
-                (void)first;
-                (void)last;
+                iterator it = begin();
+                pointer _new;
+                size_type j = 0;
+                size_type old_size = _size;
+
+                _new = _alloc.allocate((_capacity + 1) * 2);
+                for (size_type i = 0; i != old_size; i++){
+                    if (it == position){
+                        for (; first != last; _size++){
+                            _new[j++] = *first;
+                            first++;
+                         }
+                        while (i != _size)
+                            _new[j++] = _vector[i++];
+                        break;
+                    }
+                    _new[j++] = _vector[i];
+                    it++;
+                }
+                _alloc.deallocate(_vector, _capacity);
+                _capacity = (_capacity + 1) * 2;
+                _vector = _new;
             };
 
             // erase == desastre
@@ -348,7 +372,25 @@ namespace ft{
                 while (_size != 0)
                     pop_back();
             };
+
     };
-}
+
+            // Swap non member
+                //template <class T, class Alloc>  void swap (vector<T,Alloc>& x, vector<T,Alloc>& y);
+
+
+            // Operator overload
+            template <class T, class Alloc>  bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){return lhs == rhs;};  
+
+            template <class T, class Alloc>  bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){return lhs != rhs;};   
+
+            template <class T, class Alloc>  bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){return lhs < rhs;};  
+
+            template <class T, class Alloc>  bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){return lhs <= rhs;};  
+
+            template <class T, class Alloc>  bool operator> (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){return lhs > rhs;};    
+
+            template <class T, class Alloc>  bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){return lhs >= rhs;};            
+};
 
 #endif
