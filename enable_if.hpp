@@ -1,7 +1,7 @@
 #ifndef ENABLE_IF_HPP
 # define ENABLE_IF_HPP
 
-template <bool, class T = void> 
+template <bool B, class T = void> 
 struct enable_if 
 {};
 
@@ -10,5 +10,6 @@ struct enable_if<true, T>
 { 
   typedef T type; 
 };
+
 
 #endif

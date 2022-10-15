@@ -20,8 +20,11 @@ namespace ft
 
 			explicit Iterator(pointer it) : _current(it){};
             
+			explicit Iterator(T it) : _current(it.get_current() + 1){};
+
+
 			template <class iter>
-			Iterator (const Iterator<iter> & it) : _current(it.get_pointer()){};
+			Iterator (const Iterator<iter> & it) : _current(it.get_current()){};
 
 			~Iterator(){};
 			
@@ -34,7 +37,7 @@ namespace ft
 
 		public:
 
-			pointer get_pointer() const{
+			pointer get_current() const{
 				return _current;
 			}	
 
@@ -42,7 +45,7 @@ namespace ft
 				return *_current;
 			};
 
-			value_type base() const{
+			iterator_type base() const{
 				return *_current;
 			};
 
@@ -100,33 +103,38 @@ namespace ft
 
     };
 			template <class _Tp, class __Tp>
-			bool operator==(const ft::Iterator<_Tp> lhs, const ft::Iterator<__Tp> rhs){
-				return (*lhs.get_pointer() == *rhs.get_pointer());
+			inline bool operator==(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
+				return (lhs.get_current() == rhs.get_current());
 			}
 
 			template <class _Tp, class __Tp>
-			 bool operator!=(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
-				return (lhs.get_pointer() != rhs.get_pointer());
+			 inline bool operator!=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
+				return (lhs.get_current() != rhs.get_current());
 			}
 
 			template <class _Tp, class __Tp>
-			 bool operator<(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
-				return (lhs.get_pointer() < rhs.get_pointer());
+			 inline bool operator<(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
+				return (lhs.get_current() < rhs.get_current());
 			}
 
 			template <class _Tp, class __Tp>
-			 bool operator<=(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
-				return (lhs.get_pointer() <= rhs.get_pointer());
+			 inline bool operator<=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
+				return (lhs.get_current() <= rhs.get_current());
 			};
             
 			template <class _Tp, class __Tp>
-			 bool operator>(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
-				return (lhs.get_pointer() > rhs.get_pointer());
+			 inline bool operator>(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
+				return (lhs.get_current() > rhs.get_current());
 			};
 
 			template <class _Tp, class __Tp>
-			 bool operator>=(const Iterator<_Tp> lhs, const Iterator<__Tp> rhs){
-				return (lhs.get_pointer() >= rhs.get_pointer());
+			 inline bool operator>=(const Iterator<_Tp> &lhs, const Iterator<__Tp> &rhs){
+				return (lhs.get_current() >= rhs.get_current());
+			};
+
+			template <class _Tp>
+			 Iterator<_Tp> operator- (typename Iterator<_Tp>::difference_type n, const Iterator<_Tp>& rev_it){
+				return rev_it - n;
 			};
 
 			template <class _Tp>
@@ -136,7 +144,12 @@ namespace ft
             
 			template <class _Tp, class __Tp>
 			 typename Iterator<_Tp>::difference_type operator- (const Iterator<_Tp>&lhs, const Iterator<__Tp>&rhs){
-				return lhs.get_pointer() - rhs.get_pointer();
+				return lhs.get_current() - rhs.get_current();
+			};
+            
+			template <class _Tp, class __Tp>
+			 typename Iterator<_Tp>::difference_type operator+ (const Iterator<_Tp>&lhs, const Iterator<__Tp>&rhs){
+				return (lhs.base() + rhs.base());
 			};
 };
 
