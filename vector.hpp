@@ -53,9 +53,26 @@ namespace ft{
                 const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity((n + 1) * 2){
                 _vector = _alloc.allocate(_capacity);
                 size_type index = -1;
-                while (++index != n){  
-                    push_back(val);
+                try{
+                    if ((value_type)0 != val){
+                        while (++index != n){
+                            push_back(val);
+                        }
+                    }
                 }
+                catch (std::exception &e){
+                    while (++index != n){
+                        _vector[index] = true; 
+                    }
+                    _size += n;
+                    return ;
+                }
+                        while (++index != n){
+                            push_back(val);
+                        }
+               // else{
+               // }
+               
             };
 
             template <class InputIterator>

@@ -11,5 +11,6 @@ int main(){
     ft::vector<std::string> V1(10);
 
     (void)V1;
+    std::cout << V1[0] << std::endl;
     return (0);
 }
