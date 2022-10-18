@@ -62,7 +62,7 @@ namespace ft
             
 			Iterator  operator++(int){
 				Iterator tmp = *this;
-				++(*this);
+				++_current;
 				return tmp;
 			};
             
@@ -89,7 +89,7 @@ namespace ft
 
 			Iterator  operator--(int){
 				Iterator tmp = *this;
-				--(*this);
+				--_current;
 				return tmp;
 			};
 
@@ -144,7 +144,7 @@ namespace ft
             
 			template <class _Tp, class __Tp>
 			 typename Iterator<_Tp>::difference_type operator- (const Iterator<_Tp>&lhs, const Iterator<__Tp>&rhs){
-				return lhs.get_current() - rhs.get_current();
+				return (lhs.get_current()) - (rhs.get_current());
 			};
             
 			template <class _Tp, class __Tp>

@@ -27,7 +27,6 @@ namespace ft
 
 			explicit reverse_iterator(T it) : _current(it.get_current() - 1){};
 
-
 			explicit reverse_iterator(pointer it) : _current(it){};
 			
 		protected:
@@ -118,7 +117,7 @@ namespace ft
 
 			template <class _Tp, class __Tp>
 			inline bool operator!=(const reverse_iterator<_Tp> &lhs, const reverse_iterator<__Tp> &rhs){
-				return !(lhs == rhs);
+				return (lhs.get_current() != rhs.get_current());
 			};
 
 			template <class _Tp, class __Tp>
