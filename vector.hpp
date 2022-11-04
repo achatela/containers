@@ -45,14 +45,12 @@ namespace ft{
         public:
 
         // Constructors/destructor/assignement
-            explicit vector (const allocator_type& alloc = allocator_type()) :_size(0), _capacity(0) {
-                (void)alloc;
+            explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(1) {
                 _vector = _alloc.allocate(1);
             };
 
             explicit vector (size_type n, const value_type& val = value_type(),
-                const allocator_type& alloc = allocator_type()) : _size(0), _capacity(n * 2){
-                (void)alloc;
+                const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity((n + 1) * 2){
                 _vector = _alloc.allocate(_capacity);
                 size_type index = 0;
                 try{
@@ -66,10 +64,10 @@ namespace ft{
                 catch (std::exception &e){
                     index = 0;
                     while (index != n){
-                        _alloc.construct(_vector + index, val);
+                        push_back(val);//_alloc.construct(_vector + index, val);
                         index++;
                     }
-                    _size += n;
+                    //_size += n;
                     return ;
                 }
                 if (index == 0){
@@ -83,8 +81,7 @@ namespace ft{
             template <class InputIterator>
             vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
                  typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL):
-                  _size(0), _capacity(0){
-                (void)alloc;
+                   _alloc(alloc), _size(0), _capacity(1){
                 _vector = _alloc.allocate(_capacity);
                 while (first != last){
                     push_back(*first);
@@ -102,13 +99,26 @@ namespace ft{
 
 
             ~vector(){
+                size_type tmp = 0;
+
+                while (tmp < _size){
+                    _alloc.destroy(_vector + tmp);
+                    tmp++;
+                }
                 _alloc.deallocate(_vector, _capacity);
             };
 
             vector& operator=(const vector& x){
+                size_type tmp = 0;
+
+                while (tmp < _size){
+                    _alloc.destroy(_vector + tmp);
+                    tmp++;
+                }
                 _alloc.deallocate(_vector, _capacity);
                 _size = 0;
                 _vector = _alloc.allocate(x._capacity);
+                _capacity = x._capacity;
                 for (size_type i = 0; i != x._size; i++){
                     value_type val = x._vector[i];
 					push_back(val);
@@ -163,8 +173,14 @@ namespace ft{
             void resize (size_type n, value_type val = value_type()){
                 while (n < _size)
                     pop_back();
-                if (n > _size)
-                    reserve(n);
+                if (n > _size){
+                    try{
+                        reserve(n);
+                    }
+                    catch(std::exception &e) {
+                        std::cout << e.what() << std::endl;
+                    }
+                }
                 while (n > _size)
                     push_back(val);
             };
@@ -181,17 +197,21 @@ namespace ft{
             };
 
             void reserve (size_type n){
-                if (n > max_size())
+                if (n >= max_size())
                     throw std::length_error("vector::reserve");
                 if (n <= _capacity)
                     return ;
-                pointer _new;
+                pointer _new ;
                 _new = _alloc.allocate(n);
-                for (size_t i = 0; i < _size; i++){
-                    _new[i] = _vector[i];
+                size_t i = 0;
+                for (; i < _size; i++){
+                    _alloc.construct(_new + i, _vector[i]);
+                    _alloc.destroy(_vector + i);
                 }
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
+                // _new += i;
+                // _new = _alloc.allocate(n - i);
                 _capacity = n;
             };
 
@@ -272,10 +292,22 @@ namespace ft{
             void push_back (const value_type& val){
                 if (_size + 1 > _capacity)
                 {
-                    if (_capacity == 0)
-                        reserve(1);
-                    else
-                        reserve((_capacity ) * 2);
+                    if (_capacity == 0){
+                        try{
+                            reserve(1);
+                        }
+                        catch(std::exception &e) {
+                            std::cout << e.what() << std::endl;
+                        }
+                    }
+                    else{
+                        try{
+                            reserve((_capacity * 2));
+                        }
+                        catch(std::exception &e) {
+                            std::cout << e.what() << std::endl;
+                        }
+                    }
                 }
                 _alloc.construct(_vector + _size, val);
                 _size++;
@@ -295,22 +327,32 @@ namespace ft{
                 pointer _new;
                 size_type j = 0;
 
-                _new = _alloc.allocate(_capacity * 2);
+                _new = _alloc.allocate((_capacity + 1) * 2);
                 for (size_type i = 0; i <= _size; i++){
                     if (it == position){
                         ret = j;
-                        _new[j++] = val;
-                        while (i != _size)
-                            _new[j++] = _vector[i++];
+                        _alloc.construct(_new + j++, val);//_new[j++] = val;
+                        while (i < _size)
+                            _alloc.construct(_new + j++, _vector[i++]);//_new[j++] = _vector[i++];
                         break;
                     }
-                    _new[j++] = _vector[i];
+                    _alloc.construct(_new + j++, _vector[i]);//_new[j++] = _vector[i];
                     it++;
+                }
+                // if (it == position){
+                //         ret = j;
+                //         _alloc.construct(_new + j++, val);
+                // }
+                size_type tmp = 0;
+
+                while (tmp < _size){
+                    _alloc.destroy(_vector + tmp);
+                    tmp++;
                 }
                 _size++;
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
-                _capacity = (_capacity * 2);
+                _capacity = ((_capacity + 1) * 2);
                 return iterator(_vector + ret);
             };
 
@@ -323,19 +365,30 @@ namespace ft{
                 for (size_type i = 0; i <= _size; i++){
                     if (it == position){
                         for (size_type k = 0; k != n; k++){
-                            _new[j++] = val;
+                            _alloc.construct(_new + j++, val);//_new[j++] = val;
                         }
-                        while (i != _size)
-                            _new[j++] = _vector[i++];
+                        while (i < _size)
+                            _alloc.construct(_new + j++, _vector[i++]);//_new[j++] = _vector[i++];
                         break;
                     }
-                    _new[j++] = _vector[i];
+                    _alloc.construct(_new + j++, _vector[i]);//_new[j++] = _vector[i];
                     it++;
+                }
+                // if (it == position){
+                //     for (size_type k = 0; k != n; k++){
+                //         _alloc.construct(_new + j++, val);//_new[j++] = val;
+                //     }
+                // }
+                size_type tmp = 0;
+
+                while (tmp < _size){
+                    _alloc.destroy(_vector + tmp);
+                    tmp++;
                 }
                 _size += n;
                 _alloc.deallocate(_vector, _capacity);
-                _capacity = (_capacity + 1) * 2;
                 _vector = _new;
+                _capacity = (_capacity + n) * 2;
             };
 
             template <class InputIterator>
@@ -345,24 +398,47 @@ namespace ft{
                 pointer _new;
                 size_type j = 0;
                 size_type old_size = _size;
+                size_type i = 0;
+                size_type tmp = 0;
+                InputIterator first2 = first;
+                InputIterator last2 = last;
 
-                _new = _alloc.allocate((_capacity + 1) * 2);
-                for (size_type i = 0; i <= old_size; i++){
+                while (first2 != last2){
+                    tmp++;
+                    first2++;
+                }
+                _new = _alloc.allocate((_capacity + tmp) * 2);
+                for (; i <= old_size; i++){
                     if (it == position){
                         for (; first != last; _size++){
-                            _new[j++] = *first;
+                            _alloc.construct(_new + j++, *first);//_new[j++] = *first;
                             first++;
                          }
-                        while (i <= old_size)
-                            _new[j++] = _vector[i++];
+                        while (i < old_size){
+                            _alloc.construct(_new + j++, _vector[i++]);//_new[j++] = _vector[i++];
+                        }
                         break;
                     }
-                    _new[j++] = _vector[i];
+                    _alloc.construct(_new + j++, _vector[i]);//_new[j++] = _vector[i];
                     it++;
                 }
+                // if (it == position && first != last){
+                //     for (; first != last; _size++){
+                //         _alloc.construct(_new + j++, *first);//_new[j++] = *first;
+                //         first++;
+                //     }
+                //     while (i < old_size)
+                //             _alloc.construct(_new + j++, _vector[i++]);
+                // }
+                size_type tmp2 = 0;
+
+                while (tmp2 < old_size){
+                    _alloc.destroy(_vector + tmp2);
+                    tmp2++;
+                }
                 _alloc.deallocate(_vector, _capacity);
-                _capacity = (_capacity + 1) * 2;
                 _vector = _new;
+                _capacity = (_capacity + tmp) * 2;
             };
 
             // erase == desastre
