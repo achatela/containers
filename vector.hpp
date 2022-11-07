@@ -45,12 +45,13 @@ namespace ft{
         public:
 
         // Constructors/destructor/assignement
-            explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(1) {
-                _vector = _alloc.allocate(1);
+            explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0) {
+               // _vector = _alloc.allocate(1);
+               _vector = NULL;
             };
 
             explicit vector (size_type n, const value_type& val = value_type(),
-                const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity((n + 1) * 2){
+                const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(n){
                 _vector = _alloc.allocate(_capacity);
                 size_type index = 0;
                 try{
@@ -59,6 +60,7 @@ namespace ft{
                             push_back(val);
                             index++;
                         }
+                        //return;
                     }
                 }
                 catch (std::exception &e){
@@ -82,6 +84,16 @@ namespace ft{
             vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
                  typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL):
                    _alloc(alloc), _size(0), _capacity(1){
+
+                size_type tmp = 0;
+                InputIterator first2 = first;
+                InputIterator last2 = last;
+
+                while (first2 != last2){
+                    tmp++;
+                    first2++;
+                }
+                _capacity = tmp;
                 _vector = _alloc.allocate(_capacity);
                 while (first != last){
                     push_back(*first);
@@ -175,7 +187,10 @@ namespace ft{
                     pop_back();
                 if (n > _size){
                     try{
-                        reserve(n);
+                        if (_capacity * 2 < n)
+                            reserve(n);
+                        else
+                            reserve(_capacity * 2);
                     }
                     catch(std::exception &e) {
                         std::cout << e.what() << std::endl;
@@ -210,8 +225,6 @@ namespace ft{
                 }
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
-                // _new += i;
-                // _new = _alloc.allocate(n - i);
                 _capacity = n;
             };
 
@@ -290,7 +303,7 @@ namespace ft{
             };
 
             void push_back (const value_type& val){
-                if (_size + 1 > _capacity)
+                if (_size == _capacity)
                 {
                     if (_capacity == 0){
                         try{
@@ -326,8 +339,8 @@ namespace ft{
                 size_type ret = 0;
                 pointer _new;
                 size_type j = 0;
-
-                _new = _alloc.allocate((_capacity + 1) * 2);
+                
+                _new = _alloc.allocate((_capacity + 1));
                 for (size_type i = 0; i <= _size; i++){
                     if (it == position){
                         ret = j;
@@ -352,7 +365,7 @@ namespace ft{
                 _size++;
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
-                _capacity = ((_capacity + 1) * 2);
+                _capacity = ((_capacity + 1));
                 return iterator(_vector + ret);
             };
 
@@ -361,7 +374,12 @@ namespace ft{
                 pointer _new;
                 size_type j = 0;
 
-                _new = _alloc.allocate((_capacity + n) * 2);
+                if (n == 0)
+                    return ;
+                if (_size + n < _capacity)
+                    _new = _alloc.allocate((_capacity));
+                else
+                    _new = _alloc.allocate((_capacity + n));
                 for (size_type i = 0; i <= _size; i++){
                     if (it == position){
                         for (size_type k = 0; k != n; k++){
@@ -388,7 +406,8 @@ namespace ft{
                 _size += n;
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
-                _capacity = (_capacity + n) * 2;
+                if (_size > _capacity)
+                    _capacity += n;
             };
 
             template <class InputIterator>
@@ -407,7 +426,7 @@ namespace ft{
                     tmp++;
                     first2++;
                 }
-                _new = _alloc.allocate((_capacity + tmp) * 2);
+                _new = _alloc.allocate((_capacity + tmp));
                 for (; i <= old_size; i++){
                     if (it == position){
                         for (; first != last; _size++){
@@ -438,10 +457,9 @@ namespace ft{
                 }
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
-                _capacity = (_capacity + tmp) * 2;
+                _capacity = (_capacity + tmp);
             };
 
-            // erase == desastre
             iterator erase (iterator position){ // tester std::vector avec un iterator hors range
                 if (position == end() - 1)
                 {
@@ -537,22 +555,26 @@ namespace ft{
                     pop_back();
             };
             
+            friend void swap(ft::vector<T,Alloc>*, ft::vector<T,Alloc>*);
     };
 
             // Swap non member
             template <class T, class Alloc>
             void swap (vector<T,Alloc>& x, vector<T,Alloc>& y){
-                std::swap(y,x);
-                // vector::pointer tmp = y->_vector;
-                // vector::size_type tmp_size = y->_size;
-                // vector::size_type tmp_capacity = y->_capacity;
+                ft::vector<T, Alloc>::pointer tmp = y->_vector;
+                size_t tmp_size = y->_size;
+                size_t tmp_capacity = y->_capacity;
 
-                // y->_vector = x._vector;
-                // y->_size = x._size;
-                // y->_capacity = x._capacity;
-                // x._vector = tmp;
-                // x._size = tmp_size;
-                // x._capacity = tmp_capacity;
+                y->_vector = x._vector;
+                y->_size = x._size;
+                y->_capacity = x._capacity;
+                x._vector = tmp;
+                x._size = tmp_size;
+                x._capacity = tmp_capacity;
+                //std::swap(x, y);
+                // std::swap(y._vector, x._vector);
+                // std::swap(y._size, x._size);
+                // std::swap(y._capacity, x._capacity);
             };
 
 
@@ -579,9 +601,6 @@ namespace ft{
                 return !(lhs == rhs);
             };   
 
-
-
-            // A REMPLACER PAR UN LEXICOGRAPHICAL COMPARE 
             template <class T, class Alloc>
             bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
                 
