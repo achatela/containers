@@ -538,16 +538,17 @@ namespace ft{
             };
 
             void swap (vector& x){
-                pointer tmp = this->_vector;
-                size_type tmp_size = this->_size;
-                size_type tmp_capacity = this->_capacity;
+                std::swap(*this, x);
+                // pointer tmp = this->_vector;
+                // size_type tmp_size = this->_size;
+                // size_type tmp_capacity = this->_capacity;
 
-                this->_vector = x._vector;
-                this->_size = x._size;
-                this->_capacity = x._capacity;
-                x._vector = tmp;
-                x._size = tmp_size;
-                x._capacity = tmp_capacity;
+                // this->_vector = x._vector;
+                // this->_size = x._size;
+                // this->_capacity = x._capacity;
+                // x._vector = tmp;
+                // x._size = tmp_size;
+                // x._capacity = tmp_capacity;
             };
 
             void clear(){
@@ -561,17 +562,19 @@ namespace ft{
             // Swap non member
             template <class T, class Alloc>
             void swap (vector<T,Alloc>& x, vector<T,Alloc>& y){
-                ft::vector<T, Alloc>::pointer tmp = y->_vector;
-                size_t tmp_size = y->_size;
-                size_t tmp_capacity = y->_capacity;
+                (void)x;
+                (void)y;
+                // ft::vector<T, Alloc>::pointer tmp = y->_vector;
+                // size_t tmp_size = y->_size;
+                // size_t tmp_capacity = y->_capacity;
 
-                y->_vector = x._vector;
-                y->_size = x._size;
-                y->_capacity = x._capacity;
-                x._vector = tmp;
-                x._size = tmp_size;
-                x._capacity = tmp_capacity;
-                //std::swap(x, y);
+                // y->_vector = x._vector;
+                // y->_size = x._size;
+                // y->_capacity = x._capacity;
+                // x._vector = tmp;
+                // x._size = tmp_size;
+                // x._capacity = tmp_capacity;
+                std::swap(x, y);
                 // std::swap(y._vector, x._vector);
                 // std::swap(y._size, x._size);
                 // std::swap(y._capacity, x._capacity);
