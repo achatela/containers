@@ -606,23 +606,22 @@ namespace ft{
                     pop_back();
             };
             
-            void swap(ft::vector<T,Alloc>*, ft::vector<T,Alloc>*);
+            void swap (vector<T,Alloc>& x, vector<T,Alloc>& y);
     };
 
             // Swap non member
             template <class T, class Alloc>
             void swap (vector<T,Alloc>& x, vector<T,Alloc>& y){
-                // ft::vector<T, Alloc>::pointer tmp = y->_vector;
                 // size_t tmp_size = y->_size;
                 // size_t tmp_capacity = y->_capacity;
-
+                x.swap(y);
                 // y->_vector = x._vector;
                 // y->_size = x._size;
                 // y->_capacity = x._capacity;
                 // x._vector = tmp;
                 // x._size = tmp_size;
                 // x._capacity = tmp_capacity;
-                std::swap(x, y);
+                //std::swap(x, y);
                 // std::swap(y._vector, x._vector);
                 // std::swap(y._size, x._size);
                 // std::swap(y._capacity, x._capacity);
