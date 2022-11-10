@@ -5,18 +5,14 @@
 # include <stdexcept>
 # include <iterator>
 # include <utility>
-//# include <bits/stl_deque.h>
 # include "iterator_traits.hpp"
 # include "random_access.hpp"
 # include "reverse_iterator.hpp"
 # include "enable_if.hpp"
 # include "is_integral.hpp"
 # include "lexicographical_compare.hpp"
-//#include <bits/stl_iterator_base_funcs.h>
-//#include <bits/functexcept.h>
-//#include <bits/concept_check.h>
 
-
+//based on https://cplusplus.com/reference/stack/stack/?kw=stack
 
 namespace ft{
     template <class T, class Alloc = std::allocator<T> >
@@ -31,8 +27,8 @@ namespace ft{
             typedef typename allocator_type::const_pointer const_pointer;
             typedef typename ft::Iterator<T> iterator;
             typedef typename ft::Iterator<const T> const_iterator;
-            typedef typename ft::reverse_iterator<iterator> reverse_iterator; // ou <iterator> et enlever * dans reverse_iterator.hpp
-            typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator; // ou <iterator> et enlever * dans reverse_iterator.hpp
+            typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+            typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
             typedef std::ptrdiff_t difference_type;
             typedef std::size_t size_type;
 
