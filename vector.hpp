@@ -54,24 +54,24 @@ namespace ft{
                 const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(n){
                 _vector = _alloc.allocate(_capacity);
                 size_type index = 0;
-                try{
-                    if ((value_type)0 != val){
-                        while (index != n){
-                            push_back(val);
-                            index++;
-                        }
-                        //return;
-                    }
-                }
-                catch (std::exception &e){
-                    index = 0;
-                    while (index != n){
-                        push_back(val);//_alloc.construct(_vector + index, val);
-                        index++;
-                    }
-                    //_size += n;
-                    return ;
-                }
+                // try{
+                //     if ((value_type)0 != val){
+                //         while (index != n){
+                //             push_back(val);
+                //             index++;
+                //         }
+                //         //return;
+                //     }
+                // }
+                // catch (std::exception &e){
+                //     index = 0;
+                //     while (index != n){
+                //         push_back(val);//_alloc.construct(_vector + index, val);
+                //         index++;
+                //     }
+                //     //_size += n;
+                //     return ;
+                // }
                 if (index == 0){
                     while (index != n){
                         push_back(val);
@@ -101,7 +101,8 @@ namespace ft{
                 }
             };
 
-            vector (const vector& x):_size(0), _capacity(x._capacity){
+            vector (const vector& x):_size(0), _capacity(x._size){
+                _alloc = x._alloc;
                 _vector = _alloc.allocate(_capacity);
 				for (size_type i = 0; i != x._size; i++){
                     value_type val = x._vector[i];
@@ -123,14 +124,17 @@ namespace ft{
             vector& operator=(const vector& x){
                 size_type tmp = 0;
 
+                
                 while (tmp < _size){
                     _alloc.destroy(_vector + tmp);
                     tmp++;
                 }
                 _alloc.deallocate(_vector, _capacity);
+                _alloc = x._alloc;
                 _size = 0;
                 _vector = _alloc.allocate(x._capacity);
-                _capacity = x._capacity;
+                if (_capacity < x._capacity)
+                    _capacity = x._capacity;
                 for (size_type i = 0; i != x._size; i++){
                     value_type val = x._vector[i];
 					push_back(val);
@@ -218,6 +222,11 @@ namespace ft{
                     return ;
                 pointer _new ;
                 _new = _alloc.allocate(n);
+                // if (n == 1){
+                //     _vector = _new;
+                //     _capacity = n;
+                //     return ;
+                // }
                 size_t i = 0;
                 for (; i < _size; i++){
                     _alloc.construct(_new + i, _vector[i]);
@@ -340,7 +349,14 @@ namespace ft{
                 pointer _new;
                 size_type j = 0;
                 
-                _new = _alloc.allocate((_capacity + 1));
+                if (position == end()){
+                    push_back(val);
+                    return iterator(_vector + _size - 1);
+                }
+                if (_capacity > _size + 1)
+                    _new = _alloc.allocate(_capacity);
+                else
+                    _new = _alloc.allocate(_size * 2);
                 for (size_type i = 0; i <= _size; i++){
                     if (it == position){
                         ret = j;
@@ -365,7 +381,11 @@ namespace ft{
                 _size++;
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
-                _capacity = ((_capacity + 1));
+                if (_capacity > _size + 1){
+                    ;
+                }
+                else
+                    _capacity = (_size - 1) * 2;
                 return iterator(_vector + ret);
             };
 
@@ -373,13 +393,16 @@ namespace ft{
                 iterator it = begin();
                 pointer _new;
                 size_type j = 0;
+                size_type old_size = _size;
 
                 if (n == 0)
                     return ;
-                if (_size + n < _capacity)
-                    _new = _alloc.allocate((_capacity));
+                if (_capacity > _size + n)
+                    _new = _alloc.allocate(_capacity);
+                else if (_size * 2 >= _size + n)
+                    _new = _alloc.allocate((_size * 2));
                 else
-                    _new = _alloc.allocate((_capacity + n));
+                    _new = _alloc.allocate(_size + n);
                 for (size_type i = 0; i <= _size; i++){
                     if (it == position){
                         for (size_type k = 0; k != n; k++){
@@ -406,8 +429,12 @@ namespace ft{
                 _size += n;
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
-                if (_size > _capacity)
-                    _capacity += n;
+                if (_capacity > old_size + n)
+                    ;
+                else if (old_size * 2 >= old_size + n)
+                    _capacity = old_size * 2;
+                else
+                    _capacity = old_size + n;
             };
 
             template <class InputIterator>
@@ -426,7 +453,12 @@ namespace ft{
                     tmp++;
                     first2++;
                 }
-                _new = _alloc.allocate((_capacity + tmp));
+                if (_capacity > _size + tmp)
+                    _new = _alloc.allocate(_capacity);
+                else if (_size * 2 >= _size + tmp)
+                    _new = _alloc.allocate((_size * 2));
+                else
+                    _new = _alloc.allocate(_size + tmp);
                 for (; i <= old_size; i++){
                     if (it == position){
                         for (; first != last; _size++){
@@ -457,7 +489,12 @@ namespace ft{
                 }
                 _alloc.deallocate(_vector, _capacity);
                 _vector = _new;
-                _capacity = (_capacity + tmp);
+                if (_capacity > old_size + tmp)
+                    ;
+                else if (old_size * 2 >= old_size + tmp)
+                    _capacity = old_size * 2;
+                else
+                    _capacity = old_size + tmp;
             };
 
             iterator erase (iterator position){ // tester std::vector avec un iterator hors range
@@ -478,6 +515,7 @@ namespace ft{
                             i++;
                             it++;
                         }
+                        _alloc.destroy(_vector + i);
                         _size -= 1;
                         return position;
                     }
@@ -512,6 +550,9 @@ namespace ft{
                 iterator it = begin();
                 size_type i = 0;
                 size_type k = 0;
+                iterator old_first = first;
+                iterator old_last = last;
+
                 while (it != end())
                 {
                     if (it == first){
@@ -526,6 +567,10 @@ namespace ft{
                             it++;
                             i++;
                         }
+                        while (old_first != old_last && old_first != end()){
+                            _alloc.destroy(_vector + i++);
+                            old_first++;
+                        }
                         _size -= k;
                         return first - k;
                     }
@@ -538,14 +583,19 @@ namespace ft{
             };
 
             void swap (vector& x){
-                std::swap(*this, x);
+                std::swap(this->_vector, x._vector);
+                std::swap(this->_size, x._size);
+                std::swap(this->_capacity, x._capacity);
                 // pointer tmp = this->_vector;
                 // size_type tmp_size = this->_size;
                 // size_type tmp_capacity = this->_capacity;
+                // //allocator_type tmp_alloc = this->_alloc;
 
+                // //this->_alloc = x._alloc;
                 // this->_vector = x._vector;
                 // this->_size = x._size;
                 // this->_capacity = x._capacity;
+                // //x._alloc = tmp_alloc;
                 // x._vector = tmp;
                 // x._size = tmp_size;
                 // x._capacity = tmp_capacity;
@@ -556,14 +606,12 @@ namespace ft{
                     pop_back();
             };
             
-            friend void swap(ft::vector<T,Alloc>*, ft::vector<T,Alloc>*);
+            void swap(ft::vector<T,Alloc>*, ft::vector<T,Alloc>*);
     };
 
             // Swap non member
             template <class T, class Alloc>
             void swap (vector<T,Alloc>& x, vector<T,Alloc>& y){
-                (void)x;
-                (void)y;
                 // ft::vector<T, Alloc>::pointer tmp = y->_vector;
                 // size_t tmp_size = y->_size;
                 // size_t tmp_capacity = y->_capacity;
