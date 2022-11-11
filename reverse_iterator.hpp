@@ -139,39 +139,7 @@ namespace ft
 			inline bool operator>=(const reverse_iterator<_Tp> &lhs, const reverse_iterator<__Tp> &rhs){
 				return !(lhs < rhs);
 			};
-
-
-			// ? ?
-			// template <class _Tp>
-			// inline bool operator==(const reverse_iterator<_Tp> &lhs, const reverse_iterator<_Tp> &rhs){
-			// 	return (lhs.get_current() == rhs.get_current());
-			// }
-
-			// template <class _Tp>
-			// inline bool operator!=(const reverse_iterator<_Tp> &lhs, const reverse_iterator<_Tp> &rhs){
-			// 	return (lhs.get_current() != rhs.get_current());
-			// }
-
-			// template <class _Tp>
-			// inline bool operator<(const reverse_iterator<_Tp> &lhs, const reverse_iterator<_Tp> &rhs){
-			// 	return (lhs.get_current() < rhs.get_current());
-			// }
-
-			// template <class _Tp>
-			// inline bool operator<=(const reverse_iterator<_Tp> &lhs, const reverse_iterator<_Tp> &rhs){
-			// 	return (lhs.get_current() <= rhs.get_current());
-			// }
-
-			// template <class _Tp>
-			// inline bool operator>(const reverse_iterator<_Tp> &lhs, const reverse_iterator<_Tp> &rhs){
-			// 	return (lhs.get_current() > rhs.get_current());
-			// }
-
-			// template <class _Tp>
-			// inline bool operator>=(const reverse_iterator<_Tp> &lhs, const reverse_iterator<_Tp> &rhs){
-			// 	return (lhs.get_current() >= rhs.get_current());
-			// }
-
+			
 			template <class _Tp>
 			 reverse_iterator<_Tp> operator+ (typename reverse_iterator<_Tp>::difference_type n, const reverse_iterator<_Tp>& rev_it){
 				return rev_it + n;

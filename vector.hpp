@@ -25,8 +25,8 @@ namespace ft{
             typedef typename allocator_type::const_reference const_reference;
             typedef typename allocator_type::pointer pointer;
             typedef typename allocator_type::const_pointer const_pointer;
-            typedef typename ft::Iterator<T> iterator;
-            typedef typename ft::Iterator<const T> const_iterator;
+            typedef typename ft::random_access<T> iterator;
+            typedef typename ft::random_access<const T> const_iterator;
             typedef typename ft::reverse_iterator<iterator> reverse_iterator;
             typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
             typedef std::ptrdiff_t difference_type;
@@ -605,90 +605,90 @@ namespace ft{
             void swap (vector<T,Alloc>& x, vector<T,Alloc>& y);
     };
 
-            // Swap non member
-            template <class T, class Alloc>
-            void swap (vector<T,Alloc>& x, vector<T,Alloc>& y){
-                // size_t tmp_size = y->_size;
-                // size_t tmp_capacity = y->_capacity;
-                x.swap(y);
-                // y->_vector = x._vector;
-                // y->_size = x._size;
-                // y->_capacity = x._capacity;
-                // x._vector = tmp;
-                // x._size = tmp_size;
-                // x._capacity = tmp_capacity;
-                //std::swap(x, y);
-                // std::swap(y._vector, x._vector);
-                // std::swap(y._size, x._size);
-                // std::swap(y._capacity, x._capacity);
-            };
+        // Swap non member
+        template <class T, class Alloc>
+        void swap (vector<T,Alloc>& x, vector<T,Alloc>& y){
+            // size_t tmp_size = y->_size;
+            // size_t tmp_capacity = y->_capacity;
+            x.swap(y);
+            // y->_vector = x._vector;
+            // y->_size = x._size;
+            // y->_capacity = x._capacity;
+            // x._vector = tmp;
+            // x._size = tmp_size;
+            // x._capacity = tmp_capacity;
+            //std::swap(x, y);
+            // std::swap(y._vector, x._vector);
+            // std::swap(y._size, x._size);
+            // std::swap(y._capacity, x._capacity);
+        };
 
 
-            // Operator overload
-            template <class T, class Alloc>
-            bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
-                if (lhs.size() != rhs.size())
-                    return false;
-                else{
-                    size_t index = 0;
+        // Operator overload
+        template <class T, class Alloc>
+        bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+            if (lhs.size() != rhs.size())
+                return false;
+            else{
+                size_t index = 0;
 
-                    while (index != lhs.size() && index != rhs.size()){
-                        if ((lhs[index]) != (rhs[index]))
-                            return false;
-                        index++;
-                    }
-                    return true;
+                while (index != lhs.size() && index != rhs.size()){
+                    if ((lhs[index]) != (rhs[index]))
+                        return false;
+                    index++;
                 }
                 return true;
-            };  
+            }
+            return true;
+        };  
 
-            template <class T, class Alloc>
-            bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-                return !(lhs == rhs);
-            };   
+        template <class T, class Alloc>
+        bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+            return !(lhs == rhs);
+        };
 
-            template <class T, class Alloc>
-            bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
-                
-                return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
-                // size_t index = 0;
+        template <class T, class Alloc>
+        bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+            
+            return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+            // size_t index = 0;
 
-                // while (index != lhs.size() && index != rhs.size()){
-                //     if (lhs[index] != rhs[index]){
-                //         if (lhs[index] < rhs[index]){
-                //             return true;
-                //         }
-                //         else{
-                //             return false;
-                //         }
-                //     }
-                //     index++;
-                // }
-                // if (index == lhs.size() && index == rhs.size())
-                //     return false;
-                // else if (index == lhs.size())
-                //     return true;
-                // else
-                //     return false;
-            };  
-
-
+            // while (index != lhs.size() && index != rhs.size()){
+            //     if (lhs[index] != rhs[index]){
+            //         if (lhs[index] < rhs[index]){
+            //             return true;
+            //         }
+            //         else{
+            //             return false;
+            //         }
+            //     }
+            //     index++;
+            // }
+            // if (index == lhs.size() && index == rhs.size())
+            //     return false;
+            // else if (index == lhs.size())
+            //     return true;
+            // else
+            //     return false;
+        };
 
 
-            template <class T, class Alloc>
-            bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
-                return !(rhs < lhs);
-            };  
 
-            template <class T, class Alloc>
-            bool operator> (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
-                return (rhs < lhs);
-            };    
 
-            template <class T, class Alloc>
-            bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
-                return !(lhs < rhs);
-            };            
+        template <class T, class Alloc>
+        bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+            return !(rhs < lhs);
+        };  
+
+        template <class T, class Alloc>
+        bool operator> (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+            return (rhs < lhs);
+        };    
+
+        template <class T, class Alloc>
+        bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+            return !(lhs < rhs);
+        };
 };
 
 #endif

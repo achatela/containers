@@ -5,8 +5,10 @@
 # include <stdexcept>
 # include <iterator>
 # include <utility>
+# include "pair.hpp"
+# include "make_pair.hpp"
 # include "iterator_traits.hpp"
-# include "random_access.hpp"
+# include "bidirectionnal_iterator.hpp"
 # include "reverse_iterator.hpp"
 # include "enable_if.hpp"
 # include "is_integral.hpp"
@@ -21,17 +23,17 @@ namespace ft{
         public:
             typedef Key                                                     key_type;
             typedef T                                                       mapped_type;
-            typedef typename std::pair<const Key, T>                        value_type; // à remplacer par ft::pair;
+            typedef typename ft::pair<const Key, T>                         value_type;
             typedef Compare                                                 key_compare;
             typedef Alloc                                                   allocator_type;
             typedef typename allocator_type::reference                      reference;
             typedef typename allocator_type::const_reference                const_reference;
-            typedef typename allocator_type::reference::pointer             pointer;
-            typedef typename allocator_type::reference::const_pointer       const_pointer;
-            typedef typename ft::Iterator<value_type>                       iterator;               //à changer en bidirectionnal
-            typedef typename ft::Iterator<const value_type>                 const_iterator;         //à changer en bidirectionnal
-            typedef typename ft::reverse_iterator<iterator>                 reverse_iterator;       //à changer en bidirectionnal
-            typedef typename ft::reverse_iterator<const_iterator>           const_reverse_iterator; //à changer en bidirectionnal
+            typedef typename allocator_type::pointer                        pointer;
+            typedef typename allocator_type::const_pointer                  const_pointer;
+            typedef typename ft::bidirectionnal<value_type>                 iterator;
+            typedef typename ft::bidirectionnal<const value_type>           const_iterator;
+            typedef typename ft::reverse_iterator<iterator>                 reverse_iterator;       
+            typedef typename ft::reverse_iterator<const_iterator>           const_reverse_iterator; 
             typedef std::ptrdiff_t                                          difference_type;
             typedef std::size_t                                             size_type;
 
@@ -42,6 +44,8 @@ namespace ft{
             size_type       _capacity;
 
         public:
+
+        //Constructors/destructor
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0){
                 _map = NULL;
             };
@@ -64,6 +68,40 @@ namespace ft{
                     push_back(*first);
                     first++;
                 }
+            };
+
+
+        //Iterators
+            iterator begin(){
+                return iterator(_map);
+            };
+
+            const_iterator begin() const{
+                return const_iterator(_map);
+            };
+
+            iterator end(){
+                return iterator(_map + _size);
+            };
+
+            const_iterator end() const {
+                return const_iterator(_map + _size);
+            };
+
+            reverse_iterator rbegin(){
+                return reverse_iterator(_map + (_size - 1));
+            };
+
+            const_reverse_iterator rbegin() const{
+                return const_reverse_iterator(_map + (_size - 1));
+            };
+
+            reverse_iterator rend(){
+                return reverse_iterator(_map - 1);
+            };
+
+            const_reverse_iterator rend() const{
+                return const_reverse_iterator(_map - 1);
             };
 
     };
