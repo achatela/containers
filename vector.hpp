@@ -1,6 +1,8 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
+# include <map>
+
 # include <iostream>
 # include <stdexcept>
 # include <iterator>

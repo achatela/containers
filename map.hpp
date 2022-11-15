@@ -30,8 +30,8 @@ namespace ft{
             typedef typename allocator_type::const_reference                const_reference;
             typedef typename allocator_type::pointer                        pointer;
             typedef typename allocator_type::const_pointer                  const_pointer;
-            typedef typename ft::bidirectionnal<value_type>                          iterator;
-            typedef typename ft::bidirectionnal<const value_type>                    const_iterator;
+            typedef typename ft::bidirectionnal<value_type>                 iterator;
+            typedef typename ft::bidirectionnal<const value_type>           const_iterator;
             typedef typename ft::reverse_iterator<iterator>                 reverse_iterator;       
             typedef typename ft::reverse_iterator<const_iterator>           const_reverse_iterator; 
             typedef std::ptrdiff_t                                          difference_type;
@@ -47,6 +47,8 @@ namespace ft{
         public:
 
         //Constructors/destructor
+
+            map(){;};
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(1), _comparator(comp){
                 _map = _alloc.allocate(_capacity);
                 //_map = NULL;
@@ -84,6 +86,7 @@ namespace ft{
 
 
         // ITERATORS
+
             iterator begin(){
                 return iterator(_map);
             };
@@ -133,6 +136,7 @@ namespace ft{
             };
 
         // ELEMENT ACCESS
+
             mapped_type& operator[] (const key_type& k){
                 size_type i = 0;
 
@@ -175,20 +179,32 @@ namespace ft{
 
 
         // MODIFIERS
+
             pair<iterator,bool>
             insert (const value_type& val){
-                (void)val;
-            //     size_t i = 0;
+                iterator it = begin();
+                key_compare func;
 
-            //     while (i < _size){
-            //         if ((_map + i)->first == val.first){
-            //             pair<iterator, bool> tmp((_map + i)->first, false);
-            //             return make_pair (const_iterator(_map->first), false);
-            //             return tmp;
-            //         }
-            //         i++;
-            //     }
-                return (ft::make_pair(_map, true));
+                if (_size + 1 >= _capacity){
+                    pointer new_map = _alloc.allocate(_capacity + 1);
+                }
+                
+                while (it != end()){
+                    if (it->first == val.first){
+                        pair <iterator, bool> tmp = make_pair(it, false);
+                        return tmp;
+                    }
+                    it++;
+                }
+                size_type i = 0;
+                it = begin();
+                while (func(it->first, val.first) == true){
+                    it++;
+                    i++;
+                }
+                _size++;
+                _alloc.construct(_map + i, val);
+                return (ft::make_pair(_map + i, true));
             };
 
         // OBSERVERS
@@ -204,16 +220,18 @@ namespace ft{
                         return (iterator(_map + i));
                     i++;
                 }
+            return (iterator(_map + i));
         };
 
         const_iterator lower_bound (const key_type& k)const {
             size_type i = 0;
 
-                while (i < _size){
-                    if (_comparator((_map + i)->first, k) == false)
-                        return (const_iterator(_map + i));
-                    i++;
-                }
+            while (i < _size){
+                if (_comparator((_map + i)->first, k) == false)
+                    return (const_iterator(_map + i));
+                i++;
+            }
+            return (const_iterator(_map + i));
         };
 
         iterator upper_bound (const key_type& k){
@@ -224,16 +242,18 @@ namespace ft{
                         return (iterator(_map + i + 1));
                     i++;
                 }
+            return (iterator(_map + i + 1));
         };
 
         const_iterator upper_bound (const key_type& k)const {
             size_type i = 0;
 
-                while (i < _size){
-                    if (_comparator((_map + i)->first, k) == false)
-                        return (const_iterator(_map + i + 1));
-                    i++;
-                }
+            while (i < _size){
+                if (_comparator((_map + i)->first, k) == false)
+                    return (const_iterator(_map + i + 1));
+                i++;
+            }
+            return (const_iterator(_map + i + 1));
         };
 
         pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
