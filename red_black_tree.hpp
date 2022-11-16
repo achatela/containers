@@ -3,7 +3,7 @@
 
 # include "pair.hpp"
 # include "make_pair.hpp"
-# include <functionnal>
+# include <functional>
 
 # define BLACK 0
 # define RED 1
@@ -15,7 +15,7 @@ namespace ft{
 
         typedef Key                                                     key_type;
         typedef T                                                       mapped_type;
-        typedef std::less<key_type>                                     compare_key;
+        typedef std::less<key_type>                                     key_compare;
 
         private:
 
@@ -32,7 +32,7 @@ namespace ft{
 
             nodePtr         _root;
             nodePtr         _TNULL;
-            compare_key     _compare;
+            key_compare     _compare;
 
         public:
 
@@ -46,6 +46,54 @@ namespace ft{
                _root = _TNULL;
             };
 
+            void balanceTree(nodePtr k){
+                nodePtr u;
+
+                while (k->parent->color == RED){
+                    if (k->parent == k->parent->parent->rightChild){
+                        u = k->parent->parent->leftChild;
+                        if (u->color == RED){
+                            u->color = BLACK;
+                            k->parent->color = BLACK;
+                            k->parent->parent->color = RED;
+                            k = k->parent->parent;
+                        }
+                        else{
+                            if (k == k->parent->leftChild){
+                                k = k->parent;
+                                //rightRotate;
+                            }
+                            k->parent->color = BLACK;
+                            k->parent->parent->color = RED;
+                            //leftRotate
+                        }
+                    }
+                    else{
+                        u = k->parent->parent->right;
+
+                        if (u->color == BLACK){
+                            u->color = RED;
+                            k->parent->color = RED;
+                            k->parent->parent->color = BLACK;
+                            k = k->parent->parent;
+                        }
+                        else{
+                            if (k == k->parent->right){
+                                k = k->parent;
+                                //leftRotate;
+                            }
+                            k->parent->color = RED;
+                            k->parent->parent->color = BLACK;
+                            //rightRotate;
+                        }
+                    }
+                    if (k == root)
+                        break;
+                }
+                root->color = BLACK;
+            }
+
+
             void insert(ft::pair<const key_type, mapped_type> key){
                 nodePtr node = new Node;
                 node->parent = NULL;
@@ -57,13 +105,29 @@ namespace ft{
                 nodePtr y = NULL;
                 nodePtr x = _root;
 
-                while (x != TNULL){
+                while (x != _TNULL){
                     y = x;
                     if (_compare(node->data->first, x->data->first) == true)
                         x = x->leftChild;
                     else
                         x = x->rightChild;
                 }
+                node->parent = y;
+                if (y == NULL)
+                    _root = node;
+                else if (_compare(node->data->first, y->data->first) == true)
+                    y->leftChild = node;
+                else
+                    y->rightChild = node;
+                if (node->parent == NULL){
+                    node->color = BLACK;
+                    return ;
+                }
+                if (node->parent->parent == NULL){
+                    return ;
+                }
+
+                balanceTree(node);
             };
     };
 

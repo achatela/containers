@@ -16,7 +16,7 @@
 
 
 int main (void){
-    RBTree tmp;
+    ft::RBTree<int, int> tmp;
 
     return (0);
 }

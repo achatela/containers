@@ -1,6 +1,7 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
+# include "red_black_tree.hpp"
 # include <iostream>
 # include <stdexcept>
 # include <iterator>
@@ -36,9 +37,10 @@ namespace ft{
             typedef typename ft::reverse_iterator<const_iterator>           const_reverse_iterator; 
             typedef std::ptrdiff_t                                          difference_type;
             typedef std::size_t                                             size_type;
+            typedef RBTree<key_type, mapped_type>                           tree;
 
         private:
-            nodePtr         _parent;       
+            tree            _root;
             allocator_type  _alloc;
             size_type       _size;
             key_compare     _comparator;
@@ -47,13 +49,7 @@ namespace ft{
 
         // //Constructors/destructor
 
-            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _comparator(comp){
-                _parent = new Node;
-                _parent->color = 'B';
-                _parent->value =  make_pair(key_type(), mapped_type());
-                _parent->leftChild = NULL;
-                _parent->rightChild = NULL;
-                _parent->parent = NULL;
+            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _comparator(comp), _root(){
             };
 
         //     template <class InputIterator>
@@ -67,37 +63,37 @@ namespace ft{
 
         // // ITERATORS
 
-            iterator begin(){
-                return iterator(_parent);
-            };
+            // iterator begin(){
+            //     return iterator(_parent);
+            // };
 
-            const_iterator begin() const{
-                return const_iterator(_parent);
-            };
+            // const_iterator begin() const{
+            //     return const_iterator(_parent);
+            // };
 
-            iterator end(){
-                return iterator(_parent + _size);
-            };
+            // iterator end(){
+            //     return iterator(_parent + _size);
+            // };
 
-            const_iterator end() const {
-                return const_iterator(_parent + _size);
-            };
+            // const_iterator end() const {
+            //     return const_iterator(_parent + _size);
+            // };
 
-            reverse_iterator rbegin(){
-                return reverse_iterator(_parent + (_size - 1));
-            };
+            // reverse_iterator rbegin(){
+            //     return reverse_iterator(_parent + (_size - 1));
+            // };
 
-            const_reverse_iterator rbegin() const{
-                return const_reverse_iterator(_parent + (_size - 1));
-            };
+            // const_reverse_iterator rbegin() const{
+            //     return const_reverse_iterator(_parent + (_size - 1));
+            // };
 
-            reverse_iterator rend(){
-                return reverse_iterator(_parent - 1);
-            };
+            // reverse_iterator rend(){
+            //     return reverse_iterator(_parent - 1);
+            // };
 
-            const_reverse_iterator rend() const{
-                return const_reverse_iterator(_parent - 1);
-            };
+            // const_reverse_iterator rend() const{
+            //     return const_reverse_iterator(_parent - 1);
+            // };
 
         // // CAPACITY
 
