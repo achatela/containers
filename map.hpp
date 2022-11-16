@@ -38,233 +38,124 @@ namespace ft{
             typedef std::size_t                                             size_type;
 
         private:
+            nodePtr         _parent;       
             allocator_type  _alloc;
-            pointer         _map;
             size_type       _size;
-            size_type       _capacity;
             key_compare     _comparator;
 
         public:
 
-        //Constructors/destructor
+        // //Constructors/destructor
 
-            map(){;};
-            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(1), _comparator(comp){
-                _map = _alloc.allocate(_capacity);
-                //_map = NULL;
+            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _comparator(comp){
+                _parent = new Node;
+                _parent->color = 'B';
+                _parent->value =  make_pair(key_type(), mapped_type());
+                _parent->leftChild = NULL;
+                _parent->rightChild = NULL;
+                _parent->parent = NULL;
             };
 
-            template <class InputIterator>
-            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(),
-                typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL): _alloc(alloc), _size(0), _capacity(1) , _comparator(comp){
-                (void)comp;
-
-                size_type tmp = 0;
-                InputIterator first2 = first;
-                InputIterator last2 = last;
-
-                while (first2 != last2){
-                    tmp++;
-                    first2++;
-                }
-                _capacity = tmp;
-                _map = _alloc.allocate(_capacity);
-                while (first != last){
-                    insert(*first);
-                    first++;
-                }
-            };
+        //     template <class InputIterator>
+        //     map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(),
+        //         typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL): _alloc(alloc), _size(0), _comparator(comp){
+        //     };
 
             ~map(){
-                size_type tmp = 0;
-
-                while (tmp < _size){
-                    _alloc.destroy(_map + tmp);
-                }
-                _alloc.deallocate(_map, _capacity);
             };
 
 
-        // ITERATORS
+        // // ITERATORS
 
             iterator begin(){
-                return iterator(_map);
+                return iterator(_parent);
             };
 
             const_iterator begin() const{
-                return const_iterator(_map);
+                return const_iterator(_parent);
             };
 
             iterator end(){
-                return iterator(_map + _size);
+                return iterator(_parent + _size);
             };
 
             const_iterator end() const {
-                return const_iterator(_map + _size);
+                return const_iterator(_parent + _size);
             };
 
             reverse_iterator rbegin(){
-                return reverse_iterator(_map + (_size - 1));
+                return reverse_iterator(_parent + (_size - 1));
             };
 
             const_reverse_iterator rbegin() const{
-                return const_reverse_iterator(_map + (_size - 1));
+                return const_reverse_iterator(_parent + (_size - 1));
             };
 
             reverse_iterator rend(){
-                return reverse_iterator(_map - 1);
+                return reverse_iterator(_parent - 1);
             };
 
             const_reverse_iterator rend() const{
-                return const_reverse_iterator(_map - 1);
+                return const_reverse_iterator(_parent - 1);
             };
 
-        // CAPACITY
+        // // CAPACITY
 
-            bool empty() const{
-                if (_size == 0)
-                    return true;
-                return false;
-            };
+        //     bool empty() const{
+        //         if (_size == 0)
+        //             return true;
+        //         return false;
+        //     };
 
-            size_type size() const{
-                return _size;
-            };
+        //     size_type size() const{
+        //         return _size;
+        //     };
 
-            size_type max_size() const{
-                return _alloc.max_size(); // * 2 ?
-            };
+        //     size_type max_size() const{
+        //         return _alloc.max_size(); // * 2 ?
+        //     };
 
-        // ELEMENT ACCESS
+        // // ELEMENT ACCESS
 
-            mapped_type& operator[] (const key_type& k){
-                size_type i = 0;
-
-                while (i < _size && (_map + i)->first != k){
-                    i++;
-                }
-                if (i == _size){
-                    std::cout << "Not found" << std::endl;
-                    _alloc.construct(_map + i, value_type(k, mapped_type()));
-                    return (_map + i)->second;
-                }
-                else{
-                    std::cout << "Found" << std::endl;
-                    return (_map + i)->second;
-                }
-            };
+        //     mapped_type& operator[] (const key_type& k){
+        //     };
 
 
-            mapped_type& at (const key_type& k){
-                size_type i = 0;
+        //     mapped_type& at (const key_type& k){
+        //     };
 
-                while (i < _size){
-                    if ((_map + i)->first == k)
-                        return ((_map + i)->second);
-                    i++;
-                }
-                throw std::length_error("map::at");
-            };
-
-            const mapped_type& at (const key_type& k) const{
-                size_type i = 0;
-
-                while (i < _size){
-                    if ((_map + i)->first == k)
-                        return ((_map + i)->second);
-                    i++;
-                }
-                throw std::length_error("map::at");
-            };
+        //     const mapped_type& at (const key_type& k) const{
+        //     };
 
 
-        // MODIFIERS
+        // // MODIFIERS
 
-            pair<iterator,bool>
-            insert (const value_type& val){
-                iterator it = begin();
-                key_compare func;
+        //     pair<iterator,bool>
+        //     insert (const value_type& val){
+        //     };
 
-                if (_size + 1 >= _capacity){
-                    pointer new_map = _alloc.allocate(_capacity + 1);
-                }
-                
-                while (it != end()){
-                    if (it->first == val.first){
-                        pair <iterator, bool> tmp = make_pair(it, false);
-                        return tmp;
-                    }
-                    it++;
-                }
-                size_type i = 0;
-                it = begin();
-                while (func(it->first, val.first) == true){
-                    it++;
-                    i++;
-                }
-                _size++;
-                _alloc.construct(_map + i, val);
-                return (ft::make_pair(_map + i, true));
-            };
-
-        // OBSERVERS
+        // // OBSERVERS
 
 
-        // OPERATIONS
+        // // OPERATIONS
 
-        iterator lower_bound (const key_type& k){
-            size_type i = 0;
+        // iterator lower_bound (const key_type& k){
+        // };
 
-                while (i < _size){
-                    if (_comparator((_map + i)->first, k) == false)
-                        return (iterator(_map + i));
-                    i++;
-                }
-            return (iterator(_map + i));
-        };
+        // const_iterator lower_bound (const key_type& k)const {
+        // };
 
-        const_iterator lower_bound (const key_type& k)const {
-            size_type i = 0;
+        // iterator upper_bound (const key_type& k){
+        // };
 
-            while (i < _size){
-                if (_comparator((_map + i)->first, k) == false)
-                    return (const_iterator(_map + i));
-                i++;
-            }
-            return (const_iterator(_map + i));
-        };
+        // const_iterator upper_bound (const key_type& k)const {
+        // };
 
-        iterator upper_bound (const key_type& k){
-            size_type i = 0;
+        // pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
+        // };
 
-                while (i < _size){
-                    if (_comparator((_map + i)->first, k) == false)
-                        return (iterator(_map + i + 1));
-                    i++;
-                }
-            return (iterator(_map + i + 1));
-        };
-
-        const_iterator upper_bound (const key_type& k)const {
-            size_type i = 0;
-
-            while (i < _size){
-                if (_comparator((_map + i)->first, k) == false)
-                    return (const_iterator(_map + i + 1));
-                i++;
-            }
-            return (const_iterator(_map + i + 1));
-        };
-
-        pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
-            (void)k;
-            return make_pair (begin(), begin());
-        };
-
-        pair<iterator,iterator> equal_range (const key_type& k){
-            (void)k;
-            return make_pair (begin(), begin());
-        };
+        // pair<iterator,iterator> equal_range (const key_type& k){
+        // };
     };
 };
 

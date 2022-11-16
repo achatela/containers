@@ -1,5 +1,5 @@
-# include "map.hpp"
 # include <iostream>
+# include "map.hpp"
 # include <stdexcept>
 # include <iterator>
 # include <utility>
@@ -15,18 +15,8 @@
 
 
 int main (void){
-	ft::pair <int, int> tmp;
-	ft::pair tmp2(tmp);
-	ft::map <int, int> tmpp;
+	ft::map <int, int> tmp;
 
-	try{
-		std::cout << tmpp.at(0) << std::endl;
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << std::endl;
-	}
-	tmp = ft::make_pair(10,20);
-	std::cout << tmpp.size() << std::endl;
-	std::cout << tmpp.max_size() << std::endl;
-	return (0);
+	std::map<int, int>::iterator it = tmp.begin();
+	std::cout << it->first << std::endl;
 }
