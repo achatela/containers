@@ -30,13 +30,13 @@ namespace ft{
 
             typedef Node                                                 *nodePtr;
 
-            nodePtr _root;
-            nodePtr _TNULL;
-            compare_key
+            nodePtr         _root;
+            nodePtr         _TNULL;
+            compare_key     _compare;
 
         public:
 
-            RBTree(){
+            RBTree(const key_compare& comp = key_compare()) : _compare(comp){
                _TNULL = new Node;
 
                _TNULL->color = BLACK;
@@ -59,9 +59,12 @@ namespace ft{
 
                 while (x != TNULL){
                     y = x;
-                    if (node->data < x->data)
+                    if (_compare(node->data->first, x->data->first) == true)
+                        x = x->leftChild;
+                    else
+                        x = x->rightChild;
                 }
-            }
+            };
     };
 
 };

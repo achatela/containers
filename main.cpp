@@ -12,11 +12,11 @@
 # include "is_integral.hpp"
 # include "lexicographical_compare.hpp"
 # include <map>
+# include "red_black_tree.hpp"
 
 
 int main (void){
-	ft::map <int, int> tmp;
+    RBTree tmp;
 
-	std::map<int, int>::iterator it = tmp.begin();
-	std::cout << it->first << std::endl;
+    return (0);
 }
