@@ -18,9 +18,14 @@
 int main (void){
     ft::map<int, int> tmp;
 
-    for (int i = 0; i < 10000;i++){
+    for (int i = 0; i < 1000000;i++){ //ft test
         tmp.insert(ft::make_pair(i, 32));
     }
+
+    // for (int i = 0; i < 1000000; i++){ //std test
+    //     tmp[i] = 32;
+    // }
+
     // tmp.insert(ft::make_pair(2, 32));
     // tmp.insert(ft::make_pair(3, 32));
     // tmp.insert(ft::make_pair(4, 32));
