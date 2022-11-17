@@ -2,6 +2,8 @@
 # define BIDIRECTIONNAL_HPP
 
 # include "iterator_traits.hpp"
+# include "red_black_tree.hpp"
+# include "bidirectionnal_iterator.hpp"
 
 namespace ft
 {
@@ -10,11 +12,11 @@ namespace ft
 
         public:
 			typedef T													iterator_type;
-		    typedef typename ft::iterator_traits<T*>::value_type			value_type;
-            typedef typename ft::iterator_traits<T*>::difference_type 	difference_type;
-            typedef typename ft::iterator_traits<T*>::pointer         	pointer;
-			typedef typename ft::iterator_traits<T*>::reference			reference;
-			typedef typename ft::iterator_traits<T*>::iterator_category  iterator_category;
+		    typedef typename ft::iterator_traits<T>::value_type			value_type;
+            typedef typename ft::iterator_traits<T>::difference_type 	difference_type;
+            typedef typename ft::iterator_traits<T>::pointer         	pointer;
+			typedef typename ft::iterator_traits<T>::reference			reference;
+			typedef typename ft::iterator_traits<T>::iterator_category  iterator_category;
 
         private:
             pointer _current;
@@ -29,7 +31,7 @@ namespace ft
 			bidirectionnal (const bidirectionnal<iter> & it) : _current(it.get_current()){};
 
 
-			explicit bidirectionnal(T it) : _current(it.get_current() + 1){};
+			// explicit bidirectionnal(T it) : _current(it){};
 
 			~bidirectionnal(){};
 			
@@ -52,13 +54,13 @@ namespace ft
 			};
 
             bidirectionnal& operator++(){
-				_current++;
+				_current = _current->increment(_current);
 				return *this;
 			};
             
 			bidirectionnal  operator++(int){
 				bidirectionnal tmp = *this;
-				++_current;
+				_current = _current->increment(_current);
 				return tmp;
 			};
 

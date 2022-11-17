@@ -16,7 +16,41 @@
 
 
 int main (void){
-    ft::RBTree<int, int> tmp;
+    ft::map<int, int> tmp;
+
+    for (int i = 0; i < 10000;i++){
+        tmp.insert(ft::make_pair(i, 32));
+    }
+    // tmp.insert(ft::make_pair(2, 32));
+    // tmp.insert(ft::make_pair(3, 32));
+    // tmp.insert(ft::make_pair(4, 32));
+    // tmp.insert(ft::make_pair(5, 32));
+    // tmp.insert(ft::make_pair(6, 32));
+    // tmp.insert(ft::make_pair(7, 32));
+    // tmp.insert(ft::make_pair(8, 32));
+    // tmp.insert(ft::make_pair(9, 32));
+    // tmp.insert(ft::make_pair(11, 32));
+    // tmp.insert(ft::make_pair(12, 32));
+    // tmp.insert(ft::make_pair(13, 32));
+    // tmp.insert(ft::make_pair(14, 32));
+    // tmp.insert(ft::make_pair(15, 32));
+    // tmp.insert(ft::make_pair(16, 32));
+    // tmp.insert(ft::make_pair(17, 32));
+    // tmp.insert(ft::make_pair(18, 32));
+    // tmp.insert(ft::make_pair(19, 32));
+
+    // tmp[1] = 32;
+    // tmp[2] = 32;
+    // tmp[3] = 32;
+    // tmp[4] = 32;
+    // tmp[12] = 32;
+    ft::map<int, int>::iterator it = tmp.begin();
+    ft::map<int, int>::iterator ite = tmp.end();
+
+    while (it != ite){
+        std::cout << it->first << std::endl;
+        it++;
+    }
 
     return (0);
 }

@@ -21,9 +21,12 @@ namespace ft{
     template<class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
     class map{
 
+        class Node;
+
         public:
             typedef Key                                                     key_type;
             typedef T                                                       mapped_type;
+            typedef RBTree<key_type, mapped_type>                           tree;
             typedef typename ft::pair<const Key, T>                         value_type;
             typedef Compare                                                 key_compare;
             typedef Alloc                                                   allocator_type;
@@ -31,13 +34,12 @@ namespace ft{
             typedef typename allocator_type::const_reference                const_reference;
             typedef typename allocator_type::pointer                        pointer;
             typedef typename allocator_type::const_pointer                  const_pointer;
-            typedef typename ft::bidirectionnal<value_type>                 iterator;
-            typedef typename ft::bidirectionnal<const value_type>           const_iterator;
+            typedef typename tree::iterator                iterator;
+            typedef typename tree::const_iterator            const_iterator;
             typedef typename ft::reverse_iterator<iterator>                 reverse_iterator;       
             typedef typename ft::reverse_iterator<const_iterator>           const_reverse_iterator; 
             typedef std::ptrdiff_t                                          difference_type;
             typedef std::size_t                                             size_type;
-            typedef RBTree<key_type, mapped_type>                           tree;
 
         private:
             tree            _root;
@@ -52,28 +54,23 @@ namespace ft{
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _comparator(comp), _root(){
             };
 
-        //     template <class InputIterator>
-        //     map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(),
-        //         typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL): _alloc(alloc), _size(0), _comparator(comp){
-        //     };
-
             ~map(){
             };
 
 
         // // ITERATORS
 
-            // iterator begin(){
-            //     return iterator(_parent);
-            // };
+            iterator begin(){
+                return _root.begin();
+            };
 
             // const_iterator begin() const{
             //     return const_iterator(_parent);
             // };
 
-            // iterator end(){
-            //     return iterator(_parent + _size);
-            // };
+            iterator end(){
+                return _root.end();
+            };
 
             // const_iterator end() const {
             //     return const_iterator(_parent + _size);
@@ -126,9 +123,11 @@ namespace ft{
 
         // // MODIFIERS
 
-        //     pair<iterator,bool>
-        //     insert (const value_type& val){
-        //     };
+            pair<iterator,bool>
+            insert (const value_type& val){
+                _root.insert(val);
+                return (make_pair(iterator(), true));
+            };
 
         // // OBSERVERS
 
