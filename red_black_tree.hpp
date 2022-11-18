@@ -64,8 +64,8 @@ namespace ft{
             typedef Key                                                     key_type;
             typedef T                                                       mapped_type;
             typedef std::less<key_type>                                     key_compare;
-            typedef typename ft::bidirectionnal<Node*>                 iterator;
-            typedef typename ft::bidirectionnal<const Node*>           const_iterator;
+            typedef typename ft::bidirectionnal<Node>                 iterator;
+            typedef typename ft::bidirectionnal<const Node>           const_iterator;
             // typedef Node                                       node;
 
         private:
@@ -77,7 +77,7 @@ namespace ft{
             key_compare     _compare;
 
         public:
-        # include "map_display.hpp"
+        //# include "map_display.hpp"
 
             nodePtr getRoot(){
                 return _root;

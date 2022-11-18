@@ -15,8 +15,6 @@
 # include "is_integral.hpp"
 # include "lexicographical_compare.hpp"
 
-//based on https://en.cppreference.com/w/cpp/container/map https://cplusplus.com/reference/map/map/?kw=map
-
 namespace ft{
     template<class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
     class map{
@@ -53,6 +51,20 @@ namespace ft{
 
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _comparator(comp), _root(){
             };
+
+            template <class InputIterator> 
+            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _alloc(alloc), _size(0), _comparator(comp), _root(){
+
+                while (first != last && _size++ != -1){
+                    // check if the value is already inside (create member function in RBTree)
+                    _root.insert(*first);
+                }
+            };
+
+            map (const map& x): _alloc(x._alloc), _size(x._size), _comparator(x._comparator), _root() {
+
+            };
+
 
             ~map(){
             };
@@ -126,6 +138,7 @@ namespace ft{
             pair<iterator,bool>
             insert (const value_type& val){
                 _root.insert(val);
+                _size++;
                 return (make_pair(iterator(), true));
             };
 
