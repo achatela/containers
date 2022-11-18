@@ -62,7 +62,10 @@ namespace ft{
             };
 
             map (const map& x): _alloc(x._alloc), _size(x._size), _comparator(x._comparator), _root() {
+            iterator it = x.begin();
 
+                while (it != x.end())
+                    _root.insert(it->data); 
             };
 
 
@@ -76,17 +79,17 @@ namespace ft{
                 return _root.begin();
             };
 
-            // const_iterator begin() const{
-            //     return const_iterator(_parent);
-            // };
+            const_iterator begin() const{
+                return const_iterator(_root.begin());
+            };
 
             iterator end(){
                 return _root.end();
             };
 
-            // const_iterator end() const {
-            //     return const_iterator(_parent + _size);
-            // };
+            const_iterator end() const {
+                return const_iterator(_root.end());
+            };
 
             // reverse_iterator rbegin(){
             //     return reverse_iterator(_parent + (_size - 1));

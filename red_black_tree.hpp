@@ -66,12 +66,14 @@ namespace ft{
             typedef std::less<key_type>                                     key_compare;
             typedef typename ft::bidirectionnal<Node>                 iterator;
             typedef typename ft::bidirectionnal<const Node>           const_iterator;
+            typedef typename std::allocator<Node>                     allocator;
             // typedef Node                                       node;
 
         private:
 
             typedef Node                                                 *nodePtr;
 
+            allocator       _alloc;
             nodePtr         _root;
             nodePtr         _TNULL;
             key_compare     _compare;
@@ -84,7 +86,7 @@ namespace ft{
             }
 
             RBTree(const key_compare& comp = key_compare()) : _compare(comp){
-               _TNULL = new Node;
+               _TNULL = _alloc.allocate(1);
 
                _TNULL->color = BLACK;
                _TNULL->data = make_pair(key_type(), mapped_type());
@@ -97,7 +99,7 @@ namespace ft{
 
             ~RBTree(){
                 recursiveDelete(_root);
-                delete _TNULL;
+                _alloc.deallocate(_TNULL, 1);
             }
 
             
@@ -109,7 +111,7 @@ namespace ft{
                     recursiveDelete(node->rightChild);
                 if (node->leftChild != NULL)
                     recursiveDelete(node->leftChild);
-                delete node;
+                _alloc.deallocate(node, 1);
             }
 
             void leftRotate(nodePtr node){
@@ -195,7 +197,7 @@ namespace ft{
 
 
             void insert(ft::pair<const key_type, mapped_type> key){
-                nodePtr node = new Node;
+                nodePtr node = _alloc.allocate(1);
                 node->parent = NULL;
                 node->data = key;
                 node->first = key.first;
@@ -240,8 +242,20 @@ namespace ft{
                 return (iterator)x;
             }
 
+            const_iterator begin() const{
+                nodePtr x = _root;
+
+                while (x->leftChild != _TNULL)
+                    x = x->leftChild;
+                return (const_iterator)x;
+            }
+
             iterator end(){
                 return (iterator)_TNULL;
+            }
+
+            const_iterator end() const{
+                return (const_iterator)_TNULL;
             }
     };
 
