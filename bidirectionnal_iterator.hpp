@@ -28,8 +28,11 @@ namespace ft
 			explicit bidirectionnal(pointer it) : _current(it){};
             
 			template <class iter>
-			bidirectionnal (const bidirectionnal<iter> & it) /*: _current(it->get_current())*/{
-				_current = iter(*it);
+			bidirectionnal (const bidirectionnal<iter> & it) {
+				iter * tmp;
+				tmp = _current;
+				tmp = it.get_current();
+				_current = tmp;
 			};
 
 			explicit bidirectionnal(T it) : _current(it){};
@@ -37,7 +40,7 @@ namespace ft
 			~bidirectionnal(){};
 			
 			operator bidirectionnal<const T>() const{
-				return (bidirectionnal<T* const>(this->_current));
+				return (bidirectionnal<T const>(this->_current));
 			};
 
         //

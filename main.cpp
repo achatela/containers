@@ -16,12 +16,11 @@
 
 
 int main (void){
-    ft::map<int, int> tmp2;
+    ft::map<int, int> tmp;
 
     for (int i = 0; i < 1000 ;i++){ //ft test
-        tmp2.insert(ft::make_pair(i, 32));
+        tmp.insert(ft::make_pair(i, 32));
     }
-    ft::map<int, int> tmp(tmp2);
 
     // for (int i = 0; i < 1000000; i++){ //std test
     //     tmp[i] = 32;

@@ -29,7 +29,7 @@ namespace ft{
                 Key first;
                 T second;
                 
-                Node* increment(Node* x){
+                Node* increment(Node* x)const {
                     Node * y = x;
 
                     while (y->parent != NULL)
@@ -55,6 +55,37 @@ namespace ft{
                         }
 
                         if (x->rightChild != tmp)
+                            x = tmp;
+                    }
+                    return x;
+                }
+
+                Node* increment(Node& x) const{
+                    Node & y = x;
+
+                    while (y.parent != NULL)
+                        y = y.parent;
+                    while (y.rightChild != sentinel)
+                        y = y.rightChild;
+                    if (x == y)
+                        return sentinel;
+                    if (x.rightChild.data.first != Key()){
+
+                        x = x.rightChild;
+
+                        while (x.leftChild.data.first != Key()){
+                            x = x.leftChild;
+                        }
+                    }
+                    else{
+                        Node& tmp = x.parent;
+
+                        while (x == tmp.rightChild){
+                            x = tmp;
+                            tmp = tmp.parent;
+                        }
+
+                        if (x.rightChild != tmp)
                             x = tmp;
                     }
                     return x;
@@ -256,6 +287,10 @@ namespace ft{
 
             const_iterator end() const{
                 return (const_iterator)_TNULL;
+            }
+
+            allocator getAlloc() const{
+                return _alloc;
             }
     };
 

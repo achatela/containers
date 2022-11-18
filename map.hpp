@@ -40,10 +40,10 @@ namespace ft{
             typedef std::size_t                                             size_type;
 
         private:
-            tree            _root;
             allocator_type  _alloc;
             size_type       _size;
             key_compare     _comparator;
+            tree            _root;
 
         public:
 
@@ -53,19 +53,22 @@ namespace ft{
             };
 
             template <class InputIterator> 
-            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _alloc(alloc), _size(0), _comparator(comp), _root(){
+            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(),
+                typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL): _alloc(alloc), _size(0), _comparator(comp), _root(){
 
-                while (first != last && _size++ != -1){
+                while (first != last && (int)_size++ != -1){
                     // check if the value is already inside (create member function in RBTree)
-                    _root.insert(*first);
+                    _root.insert(first->data);
                 }
             };
 
             map (const map& x): _alloc(x._alloc), _size(x._size), _comparator(x._comparator), _root() {
-            iterator it = x.begin();
+            const_iterator it = x.begin();
 
-                while (it != x.end())
-                    _root.insert(it->data); 
+                while (it != x.end()){
+                    _root.insert(it->data);
+                    it++;
+                }
             };
 
 
@@ -115,13 +118,13 @@ namespace ft{
         //         return false;
         //     };
 
-        //     size_type size() const{
-        //         return _size;
-        //     };
+            size_type size() const{
+                return _size;
+            };
 
-        //     size_type max_size() const{
-        //         return _alloc.max_size(); // * 2 ?
-        //     };
+            size_type max_size() const{
+                return _root.getAlloc().max_size(); // * 2 ?
+            };
 
         // // ELEMENT ACCESS
 
