@@ -58,7 +58,7 @@ namespace ft{
 
                 while (first != last && (int)_size++ != -1){
                     // check if the value is already inside (create member function in RBTree)
-                    _root.insert(first->data);
+                    _root.insert(make_pair(first->first, first->second));
                 }
             };
 
@@ -71,6 +71,24 @@ namespace ft{
                 }
             };
 
+            map& operator= (const map& x) { //voir si ça leak quand il existe déjà
+            const_iterator it = x.begin();
+
+                if (_size != 0){
+                    _root.~RBTree();
+                }
+                _root = RBTree<key_type, mapped_type>();
+                // _root.RBTree(1);
+                _alloc = x._alloc;
+                _size = x._size;
+                _comparator = x._comparator;
+
+                while (it != x.end()){
+                    _root.insert(it->data);
+                    it++;
+                }
+                return *this;
+            };
 
             ~map(){
             };
@@ -79,7 +97,7 @@ namespace ft{
         // // ITERATORS
 
             iterator begin(){
-                return _root.begin();
+                return iterator(_root.begin());
             };
 
             const_iterator begin() const{
@@ -87,7 +105,7 @@ namespace ft{
             };
 
             iterator end(){
-                return _root.end();
+                return iterator(_root.end());
             };
 
             const_iterator end() const {
@@ -112,11 +130,11 @@ namespace ft{
 
         // // CAPACITY
 
-        //     bool empty() const{
-        //         if (_size == 0)
-        //             return true;
-        //         return false;
-        //     };
+            bool empty() const{
+                if (_size == 0)
+                    return true;
+                return false;
+            };
 
             size_type size() const{
                 return _size;
@@ -153,23 +171,35 @@ namespace ft{
 
         // // OPERATIONS
 
-        // iterator lower_bound (const key_type& k){
-        // };
+        iterator lower_bound (const key_type& k){
+            (void)k;
+            return begin();
+        };
 
-        // const_iterator lower_bound (const key_type& k)const {
-        // };
+        const_iterator lower_bound (const key_type& k)const {
+            (void)k;
+            return begin();
+        };
 
-        // iterator upper_bound (const key_type& k){
-        // };
+        iterator upper_bound (const key_type& k){
+            (void)k;
+            return begin();
+        };
 
-        // const_iterator upper_bound (const key_type& k)const {
-        // };
+        const_iterator upper_bound (const key_type& k)const {
+            (void)k;
+            return begin();
+        };
 
-        // pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
-        // };
+        pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
+            (void)k;
+            return make_pair(begin(), begin());
+        };
 
-        // pair<iterator,iterator> equal_range (const key_type& k){
-        // };
+        pair<iterator,iterator> equal_range (const key_type& k){
+            (void)k;
+            return make_pair(begin(), begin());
+        };
     };
 };
 

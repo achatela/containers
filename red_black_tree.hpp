@@ -29,7 +29,7 @@ namespace ft{
                 Key first;
                 T second;
                 
-                Node* increment(Node* x)const {
+                Node* increment(Node* x) {
                     Node * y = x;
 
                     while (y->parent != NULL)
@@ -60,32 +60,32 @@ namespace ft{
                     return x;
                 }
 
-                Node* increment(Node& x) const{
-                    Node & y = x;
+                const Node* increment(const Node* x) const{
+                    const Node * y = x;
 
-                    while (y.parent != NULL)
-                        y = y.parent;
-                    while (y.rightChild != sentinel)
-                        y = y.rightChild;
+                    while (y->parent != NULL)
+                        y = y->parent;
+                    while (y->rightChild != sentinel)
+                        y = y->rightChild;
                     if (x == y)
                         return sentinel;
-                    if (x.rightChild.data.first != Key()){
+                    if (x->rightChild->data.first != Key()){
 
-                        x = x.rightChild;
+                        x = x->rightChild;
 
-                        while (x.leftChild.data.first != Key()){
-                            x = x.leftChild;
+                        while (x->leftChild->data.first != Key()){
+                            x = x->leftChild;
                         }
                     }
                     else{
-                        Node& tmp = x.parent;
+                        const Node * tmp = x->parent;
 
-                        while (x == tmp.rightChild){
+                        while (x == tmp->rightChild){
                             x = tmp;
-                            tmp = tmp.parent;
+                            tmp = tmp->parent;
                         }
 
-                        if (x.rightChild != tmp)
+                        if (x->rightChild != tmp)
                             x = tmp;
                     }
                     return x;
@@ -133,6 +133,10 @@ namespace ft{
                 _alloc.deallocate(_TNULL, 1);
             }
 
+            RBTree(int i){
+                if (i == 1)
+                    std::cout << "e"<< std::endl;
+            }
             
 
             void recursiveDelete(nodePtr node){
