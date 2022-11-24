@@ -30,6 +30,10 @@ namespace ft{
                 T second;
                 
                 Node* increment(Node* x) {
+                    if (x->first == Key() && x->second == T()){ // ??
+                        while (1)
+                            ;
+                    }
                     Node * y = x;
 
                     while (y->parent != NULL)
@@ -61,6 +65,10 @@ namespace ft{
                 }
 
                 const Node* increment(const Node* x) const{
+                    if (x->first == Key() && x->second == T()){ // ??
+                        while (1)
+                            ;
+                    }
                     const Node * y = x;
 
                     while (y->parent != NULL)
@@ -125,17 +133,13 @@ namespace ft{
                _TNULL->second = mapped_type();
                _TNULL->leftChild = NULL;
                _TNULL->rightChild = NULL;
+               _TNULL->parent = NULL;
                _root = _TNULL;
             };
 
             ~RBTree(){
                 recursiveDelete(_root);
                 _alloc.deallocate(_TNULL, 1);
-            }
-
-            RBTree(int i){
-                if (i == 1)
-                    std::cout << "e"<< std::endl;
             }
             
 
@@ -147,6 +151,18 @@ namespace ft{
                 if (node->leftChild != NULL)
                     recursiveDelete(node->leftChild);
                 _alloc.deallocate(node, 1);
+            }
+
+            nodePtr minimum(nodePtr node){
+                while (node->leftChild != _TNULL)
+                    node = node->leftChild;
+                return node;
+            }
+
+            nodePtr maximum(nodePtr node){
+                while (node->rightChild != _TNULL)
+                    node = node->rightChild;
+                return node;
             }
 
             void leftRotate(nodePtr node){
@@ -230,8 +246,136 @@ namespace ft{
                 _root->color = BLACK;
             }
 
+            void transplant(nodePtr left, nodePtr right){
+                if (left->parent == NULL)
+                    _root = right;
+                else if (left == left->parent->leftChild)
+                    left->parent->leftChild = right;
+                else
+                    left->parent->rightChild = right;
+                right->parent = left->parent;
+            }
 
-            void insert(ft::pair<const key_type, mapped_type> key){
+            void deleteBalance(nodePtr x){
+                nodePtr s;
+                while (x != _root && x->color == 0) {
+                    if (x == x->parent->leftChild) {
+                        s = x->parent->rightChild;
+                        if (s->color == 1) {
+                            s->color = 0;
+                            x->parent->color = 1;
+                            leftRotate(x->parent);
+                            s = x->parent->rightChild;
+                        }
+
+                        if (s->leftChild->color == 0 && s->rightChild->color == 0) {
+                            s->color = 1;
+                            x = x->parent;
+                        } else {
+                            if (s->rightChild->color == 0) {
+                                    s->leftChild->color = 0;
+                                    s->color = 1;
+                                    rightRotate(s);
+                                    s = x->parent->rightChild;
+                            }
+
+                            s->color = x->parent->color;
+                            x->parent->color = 0;
+                            s->rightChild->color = 0;
+                            leftRotate(x->parent);
+                            x = _root;
+                        }
+                    }
+                    
+                    else {
+                            s = x->parent->leftChild;
+                            if (s->color == 1) {
+                                s->color = 0;
+                                x->parent->color = 1;
+                                rightRotate(x->parent);
+                                s = x->parent->leftChild;
+                            }
+
+                            if (s->rightChild->color == 0 && s->leftChild->color == 0) {
+                                s->color = 1;
+                                x = x->parent;
+                            } else {
+                                if (s->leftChild->color == 0) {
+                                        s->rightChild->color = 0;
+                                        s->color = 1;
+                                        leftRotate(s);
+                                        s = x->parent->leftChild;
+                                }
+
+                                s->color = x->parent->color;
+                                x->parent->color = 0;
+                                s->leftChild->color = 0;
+                                rightRotate(x->parent);
+                                x = _root;
+                            }
+                    }
+                }
+                x->color = 0;
+            }
+
+            void erase(key_type k){
+
+
+
+                nodePtr node = _root;
+                nodePtr toDelete = _TNULL;
+
+                while (node != _TNULL){
+                    if (node->first == k)
+                        toDelete = node;
+                    if (node->first <= k)
+                        node = node->rightChild;
+                    else
+                        node = node->leftChild;
+                }
+
+                if (toDelete == _TNULL)
+                    return ;
+
+
+
+
+
+                nodePtr x;
+                nodePtr y = toDelete;
+                int tmpColor = y->color;
+                if (toDelete->leftChild == _TNULL){
+                    x = toDelete->rightChild;
+                    transplant(toDelete, toDelete->rightChild);
+                }
+                else if (toDelete->rightChild == _TNULL){
+                    x = toDelete->leftChild;
+                    transplant(toDelete, toDelete->leftChild);
+                }
+                else{
+                    y = minimum(toDelete->rightChild);
+                    tmpColor = y->color;
+                    x = y->rightChild;
+                    if (y->parent == toDelete)
+                        x->parent = y;
+                    else{
+                        transplant(y, y->rightChild);
+                        y->rightChild = toDelete->rightChild;
+                        y->rightChild->parent = y;
+                    }
+                    transplant(toDelete, y);
+                    y->leftChild = toDelete->leftChild;
+                    y->leftChild->parent = y;
+                    y->color = tmpColor;
+                }
+                _alloc.deallocate(toDelete, 1); // change with std allocator
+                if (tmpColor == BLACK)
+                    deleteBalance(x);
+
+
+            }
+
+            iterator insert(ft::pair<const key_type, mapped_type> key){
                 nodePtr node = _alloc.allocate(1);
                 node->parent = NULL;
                 node->data = key;
@@ -261,15 +405,18 @@ namespace ft{
                     y->rightChild = node;
                 if (node->parent == NULL){
                     node->color = BLACK;
-                    return ;
+                    return (iterator)node;
                 }
                 if (node->parent->parent == NULL){
-                    return ;
+                    return (iterator)node;
                 }
                 balanceTree(node);
+                return (iterator)node;
             };
 
             iterator begin(){
+                if (_root == _TNULL)
+                    return (iterator)_TNULL;
                 nodePtr x = _root;
 
                 while (x->leftChild != _TNULL)
@@ -278,6 +425,8 @@ namespace ft{
             }
 
             const_iterator begin() const{
+                if (_root == _TNULL)
+                    return (const_iterator)_TNULL;
                 nodePtr x = _root;
 
                 while (x->leftChild != _TNULL)
