@@ -32,10 +32,10 @@ namespace ft{
             typedef typename allocator_type::const_reference                const_reference;
             typedef typename allocator_type::pointer                        pointer;
             typedef typename allocator_type::const_pointer                  const_pointer;
-            typedef typename tree::iterator                iterator;
-            typedef typename tree::const_iterator            const_iterator;
-            typedef typename ft::RBreverse_iterator<iterator>                 reverse_iterator;       
-            typedef typename ft::RBreverse_iterator<const_iterator>           const_reverse_iterator; 
+            typedef typename tree::iterator                                 iterator;
+            typedef typename tree::const_iterator                           const_iterator;
+            typedef typename ft::RBreverse_iterator<iterator>               reverse_iterator;       
+            typedef typename ft::RBreverse_iterator<const_iterator>         const_reverse_iterator; 
             typedef std::ptrdiff_t                                          difference_type;
             typedef std::size_t                                             size_type;
 
@@ -56,9 +56,11 @@ namespace ft{
             map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(),
                 typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL): _alloc(alloc), _size(0), _comparator(comp), _root(){
 
-                while (first != last && (int)_size++ != -1){
+                while (first != last){
                     // check if the value is already inside (create member function in RBTree)
                     _root.insert(ft::make_pair(first->first, first->second));
+                    first++;
+                    _size++;
                 }
             };
 
@@ -299,7 +301,6 @@ namespace ft{
                 while (j < i){
                     _root.erase(value[j]);
                     _size--;
-                    std::cout << "size = " << _size << std::endl;
                     j++;
                 }
                 // if (_size == 0)

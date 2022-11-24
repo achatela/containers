@@ -30,10 +30,10 @@ namespace ft{
                 T second;
                 
                 Node* increment(Node* x) {
-                    if (x->first == Key() && x->second == T()){ // ??
-                        while (1)
-                            ;
-                    }
+                    // if (x->first == Key() && x->second == T()){ // ??
+                    //     while (1)
+                    //         ;
+                    // }
                     Node * y = x;
 
                     while (y->parent != NULL)
