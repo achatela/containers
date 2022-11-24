@@ -128,7 +128,7 @@ namespace ft{
                _TNULL = _alloc.allocate(1);
 
                _TNULL->color = BLACK;
-               _TNULL->data = make_pair(key_type(), mapped_type());
+               _TNULL->data = ft::make_pair(key_type(), mapped_type());
                _TNULL->first = key_type();
                _TNULL->second = mapped_type();
                _TNULL->leftChild = NULL;
@@ -434,12 +434,32 @@ namespace ft{
                 return (const_iterator)x;
             }
 
+            iterator rbegin(){
+                if (_root == _TNULL)
+                    return (iterator)_TNULL;
+                return (iterator)maximum(_root);
+            }
+
+            const_iterator rbegin()const {
+                if (_root == _TNULL)
+                    return (iterator)_TNULL;
+                return (const_iterator)maximum(_root);
+            }
+
             iterator end(){
                 return (iterator)_TNULL;
             }
 
             const_iterator end() const{
                 return (const_iterator)_TNULL;
+            }
+
+            iterator rend(){
+                return (iterator)maximum(_root);
+            }
+
+            const_iterator rend()const {
+                return (const_iterator)maximum(_root);
             }
 
             allocator getAlloc() const{

@@ -10,7 +10,7 @@
 # include "make_pair.hpp"
 # include "iterator_traits.hpp"
 # include "bidirectionnal_iterator.hpp"
-# include "reverse_iterator.hpp"
+# include "RBreverse_iterator.hpp"
 # include "enable_if.hpp"
 # include "is_integral.hpp"
 # include "lexicographical_compare.hpp"
@@ -34,8 +34,8 @@ namespace ft{
             typedef typename allocator_type::const_pointer                  const_pointer;
             typedef typename tree::iterator                iterator;
             typedef typename tree::const_iterator            const_iterator;
-            typedef typename ft::reverse_iterator<iterator>                 reverse_iterator;       
-            typedef typename ft::reverse_iterator<const_iterator>           const_reverse_iterator; 
+            typedef typename ft::RBreverse_iterator<iterator>                 reverse_iterator;       
+            typedef typename ft::RBreverse_iterator<const_iterator>           const_reverse_iterator; 
             typedef std::ptrdiff_t                                          difference_type;
             typedef std::size_t                                             size_type;
 
@@ -58,7 +58,7 @@ namespace ft{
 
                 while (first != last && (int)_size++ != -1){
                     // check if the value is already inside (create member function in RBTree)
-                    _root.insert(make_pair(first->first, first->second));
+                    _root.insert(ft::make_pair(first->first, first->second));
                 }
             };
 
@@ -115,21 +115,21 @@ namespace ft{
                 return const_iterator(_root.end());
             };
 
-            // reverse_iterator rbegin(){
-            //     return reverse_iterator(_parent + (_size - 1));
-            // };
+            reverse_iterator rbegin(){
+                return reverse_iterator(_root.rbegin());
+            };
 
-            // const_reverse_iterator rbegin() const{
-            //     return const_reverse_iterator(_parent + (_size - 1));
-            // };
+            const_reverse_iterator rbegin() const{
+                return const_reverse_iterator(_root.rbegin());
+            };
 
-            // reverse_iterator rend(){
-            //     return reverse_iterator(_parent - 1);
-            // };
+            reverse_iterator rend(){
+                return reverse_iterator(_root.rend());
+            };
 
-            // const_reverse_iterator rend() const{
-            //     return const_reverse_iterator(_parent - 1);
-            // };
+            const_reverse_iterator rend() const{
+                return const_reverse_iterator(_root.rend());
+            };
 
         // // CAPACITY
 
@@ -159,7 +159,7 @@ namespace ft{
                 }
 
                 if (it == end()){
-                    insert(make_pair(k, mapped_type()));
+                    insert(ft::make_pair(k, mapped_type()));
                 }
                 else
                     return (it->second);
@@ -206,7 +206,7 @@ namespace ft{
             insert (const value_type& val){
                 if (_size == 0){
                     _size++;
-                    return make_pair(_root.insert(val), true);
+                    return ft::make_pair(_root.insert(val), true);
                 }
                 iterator it = begin();
 
@@ -219,9 +219,9 @@ namespace ft{
                 if (it == end()){
                     it = _root.insert(val);
                     _size++;
-                    return (make_pair(it, true));
+                    return (ft::make_pair(it, true));
                 }
-                return (make_pair(it, false));
+                return (ft::make_pair(it, false));
             };
 
             iterator insert (iterator position, const value_type& val){
@@ -336,7 +336,7 @@ namespace ft{
             iterator find (const key_type& k){
                 iterator it = begin();
 
-                while (it->first != end()){
+                while (it != end()){
                     if (it->first == k)
                         break;
                     it++;
@@ -347,7 +347,7 @@ namespace ft{
             const_iterator find (const key_type& k) const{
                 const_iterator it = begin();
 
-                while (it->first != end()){
+                while (it != end()){
                     if (it->first == k) // TO FIX ? comparison object reflexively
                         break;
                     it++;
@@ -358,7 +358,7 @@ namespace ft{
             size_type count (const key_type& k) const{
                 iterator it = begin();
 
-                while (it->first != end()){
+                while (it != end()){
                     if (it->first == k)
                         return 1;
                     it++;
@@ -411,11 +411,11 @@ namespace ft{
             };
 
             pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
-                return (make_pair(lower_bound(k), upper_bound(k)));
+                return (ft::make_pair(lower_bound(k), upper_bound(k)));
             };
 
             pair<iterator,iterator> equal_range (const key_type& k){
-                return (make_pair(lower_bound(k), upper_bound(k)));
+                return (ft::make_pair(lower_bound(k), upper_bound(k)));
             };
 
             allocator_type get_allocator() const{

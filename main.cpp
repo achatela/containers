@@ -69,43 +69,63 @@
 // }
 
 int main (void){
-    ft::map<int, int> tmp;
 
-    for (int i = 10; i != 0 ; i--){ //ft test
-        tmp.insert(ft::make_pair(i, 32));
-    }
+    ft::map<char,int> mymap;
 
-    ft::map<int, int> tmp2;
+    ft::map<char,int>::key_compare mycomp = mymap.key_comp();
 
-    tmp2 = tmp;
+    mymap['a']=100;
+    mymap['b']=200;
+    mymap['c']=300;
 
-    ft::map<int, int>::iterator it = tmp2.begin();
-    while (it != tmp2.end()){
-        std::cout << "<" << it->first << " -> " << it->second << ">" << std::endl;
-        it++;
-    }
+    char highest = mymap.rbegin()->first;     // key value of last element
+
+    std::cout << "mymap contains:\n";
+    ft::map<char,int>::iterator it = mymap.begin();
+    do {
+        std::cout << it->first << " => " << it->second << '\n';
+    } while ( mycomp((*it++).first, highest) );
+
+    std::cout << '\n';
+
+    return 0;
+    // ft::map<int, int> tmp;
+
+    // for (int i = 10; i != 0 ; i--){ //ft test
+    //     tmp.insert(ft::make_pair(i, 32));
+    // }
+
+    // ft::map<int, int> tmp2;
+
+    // tmp2 = tmp;
+
+    // ft::map<int, int>::iterator it = tmp2.begin();
+    // while (it != tmp2.end()){
+    //     std::cout << "<" << it->first << " -> " << it->second << ">" << std::endl;
+    //     it++;
+    // }
 
 
-    std::cout << tmp2.at(1) << std::endl << "=======================================================" << std::endl;
+    // std::cout << tmp2.at(1) << std::endl << "=======================================================" << std::endl;
 
-    ft::map<int, int> tmp3;
+    // ft::map<int, int> tmp3;
 
-    tmp3.insert(tmp2.begin(), tmp2.end());
-    ft::map<int, int>::iterator it2 = tmp3.begin();
+    // tmp3.insert(tmp2.begin(), tmp2.end());
+    // ft::map<int, int>::iterator it2 = tmp3.begin();
 
-    for (int j = 0; j != 6; j++)
-        it2++;
-    tmp3.erase(tmp3.begin(), it2);
-    // tmp3.swap(tmp2);
-    it2 = tmp3.begin();
-    while (it2 != tmp3.end()){
-        std::cout << "<" << it2->first << " -> " << it2->second << ">" << std::endl;
-        it2++;
-    }
+    // for (int j = 0; j != 6; j++)
+    //     it2++;
+    // tmp3.erase(tmp3.begin(), it2);
+    // // tmp3.swap(tmp2);
+    // it2 = tmp3.begin();
+    // while (it2 != tmp3.end()){
+    //     std::cout << "<" << it2->first << " -> " << it2->second << ">" << std::endl;
+    //     it2++;
+    // }
 
-    tmp.clear();
-    std::cout << "tmp3 size "<< tmp.size() << std::endl;
-    return (0);
+    // tmp.clear();
+    // std::cout << "tmp3 size "<< tmp.size() << std::endl;
+    // return (0);
 
 
 

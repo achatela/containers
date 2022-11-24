@@ -1,13 +1,13 @@
-#ifndef REVERSE_ITERATOR_HPP
-# define REVERSE_ITERATOR_HPP
+#ifndef RBreverse_iterator_HPP
+# define RBreverse_iterator_HPP
 
-# include "random_access.hpp"
+# include "bidirectionnal_iterator.hpp"
 # include "iterator_traits.hpp"
 
 namespace ft
 {
     template<typename T>
-    class reverse_iterator
+    class RBreverse_iterator
     {
         public:
 			typedef T													iterator_type;
@@ -20,19 +20,19 @@ namespace ft
 			pointer _current;
 
 		public:
-            reverse_iterator() : _current(NULL){};
+            RBreverse_iterator() : _current(NULL){};
 
 
-			operator reverse_iterator<const T>() const{
-				return (reverse_iterator<T const>(this->_current));
+			operator RBreverse_iterator<const T>() const{
+				return (RBreverse_iterator<T const>(this->_current));
 			}
 
 
-			reverse_iterator(T it) : _current(it.get_current() - 1){};
+			RBreverse_iterator(T it) : _current(it.get_current()){};
 
-			explicit reverse_iterator(pointer it) : _current(it){};
+			explicit RBreverse_iterator(pointer it) : _current(it){};
 			
-			~reverse_iterator(){};
+			~RBreverse_iterator(){};
 		
 		public:
 
@@ -42,7 +42,7 @@ namespace ft
 
             
 			template <class iter>
-			reverse_iterator (const reverse_iterator<iter> & it) : _current(it.get_current()){};
+			RBreverse_iterator (const RBreverse_iterator<iter> & it) : _current(it.get_current()){};
 
 
 			reference operator*() const{
@@ -52,53 +52,53 @@ namespace ft
 			// pointer operator->()const{}
 
 			iterator_type base() const{
-				reverse_iterator tmp = *this;
+				RBreverse_iterator tmp = *this;
 
 				++tmp._current;
 				return (iterator_type)tmp._current;
 			};
 
-			reverse_iterator operator+ (difference_type n) const{
-				reverse_iterator tmp = *this;
+			RBreverse_iterator operator+ (difference_type n) const{
+				RBreverse_iterator tmp = *this;
 				tmp._current -= n;
 				return tmp;
 			};
 
-			reverse_iterator& operator++(){
+			RBreverse_iterator& operator++(){
 				--_current;
 				return *this;
 			};
             
-			reverse_iterator  operator++(int){
-				reverse_iterator tmp = *this;
+			RBreverse_iterator  operator++(int){
+				RBreverse_iterator tmp = *this;
 
 				--_current;
 				return tmp;
 			};
             
-			reverse_iterator& operator+= (difference_type n){
+			RBreverse_iterator& operator+= (difference_type n){
 				_current -= n;
 				return (*this);
 			};
 
-			reverse_iterator& operator-= (difference_type n){
+			RBreverse_iterator& operator-= (difference_type n){
 				_current += n;
 				return (*this);
 			};
 
-			reverse_iterator operator- (difference_type n) const{
-				reverse_iterator tmp = *this;
+			RBreverse_iterator operator- (difference_type n) const{
+				RBreverse_iterator tmp = *this;
 				tmp._current += n;
 				return tmp;
 			};
 
-			reverse_iterator& operator--(){
+			RBreverse_iterator& operator--(){
 				++_current;
 				return *this;
 			};
 
-			reverse_iterator  operator--(int){
-				reverse_iterator tmp = *this;
+			RBreverse_iterator  operator--(int){
+				RBreverse_iterator tmp = *this;
 				++_current;
 				return tmp;
 			};
@@ -113,52 +113,52 @@ namespace ft
     };
 
 			template <class _Tp, class __Tp>
-			inline bool operator==(const reverse_iterator<_Tp> &lhs, const reverse_iterator<__Tp> &rhs){
+			inline bool operator==(const RBreverse_iterator<_Tp> &lhs, const RBreverse_iterator<__Tp> &rhs){
 				return (lhs.get_current() == rhs.get_current());
 			};
 
 			template <class _Tp, class __Tp>
-			inline bool operator!=(const reverse_iterator<_Tp> &lhs, const reverse_iterator<__Tp> &rhs){
+			inline bool operator!=(const RBreverse_iterator<_Tp> &lhs, const RBreverse_iterator<__Tp> &rhs){
 				return (lhs.get_current() != rhs.get_current());
 			};
 
 			template <class _Tp, class __Tp>
-			inline bool operator<(const reverse_iterator<_Tp> &lhs, const reverse_iterator<__Tp> &rhs){
+			inline bool operator<(const RBreverse_iterator<_Tp> &lhs, const RBreverse_iterator<__Tp> &rhs){
 				return (rhs.get_current() < lhs.get_current());
 			};
 
 			template <class _Tp, class __Tp>
-			inline bool operator<=(const reverse_iterator<_Tp> &lhs, const reverse_iterator<__Tp> &rhs){
+			inline bool operator<=(const RBreverse_iterator<_Tp> &lhs, const RBreverse_iterator<__Tp> &rhs){
 				return !(rhs < lhs);
 			};
             
 			template <class _Tp, class __Tp>
-			inline bool operator>(const reverse_iterator<_Tp> &lhs, const reverse_iterator<__Tp> &rhs){
+			inline bool operator>(const RBreverse_iterator<_Tp> &lhs, const RBreverse_iterator<__Tp> &rhs){
 				return (rhs < lhs);
 			};
 
 			template <class _Tp, class __Tp>
-			inline bool operator>=(const reverse_iterator<_Tp> &lhs, const reverse_iterator<__Tp> &rhs){
+			inline bool operator>=(const RBreverse_iterator<_Tp> &lhs, const RBreverse_iterator<__Tp> &rhs){
 				return !(lhs < rhs);
 			};
 			
 			template <class _Tp>
-			 reverse_iterator<_Tp> operator+ (typename reverse_iterator<_Tp>::difference_type n, const reverse_iterator<_Tp>& rev_it){
+			 RBreverse_iterator<_Tp> operator+ (typename RBreverse_iterator<_Tp>::difference_type n, const RBreverse_iterator<_Tp>& rev_it){
 				return rev_it + n;
 			};
 			
 			template <class _Tp> // ??
-			 reverse_iterator<_Tp> operator- (typename reverse_iterator<_Tp>::difference_type n, const reverse_iterator<_Tp>& rev_it){
+			 RBreverse_iterator<_Tp> operator- (typename RBreverse_iterator<_Tp>::difference_type n, const RBreverse_iterator<_Tp>& rev_it){
 				return rev_it - n;
 			};
             
 			template <class _Tp, class __Tp>
-			 typename reverse_iterator<_Tp>::difference_type operator- (const reverse_iterator<_Tp>& lhs, const reverse_iterator<__Tp>& rhs){
+			 typename RBreverse_iterator<_Tp>::difference_type operator- (const RBreverse_iterator<_Tp>& lhs, const RBreverse_iterator<__Tp>& rhs){
 				return rhs.get_current() - lhs.get_current();
 			};
 
 			template <class _Tp, class __Tp> // ??
-			 typename reverse_iterator<_Tp>::difference_type operator+ (const reverse_iterator<_Tp>& lhs, const reverse_iterator<__Tp>& rhs){
+			 typename RBreverse_iterator<_Tp>::difference_type operator+ (const RBreverse_iterator<_Tp>& lhs, const RBreverse_iterator<__Tp>& rhs){
 				return lhs.get_current() + rhs.get_current();
 			};
 };
