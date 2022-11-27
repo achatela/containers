@@ -17,24 +17,25 @@ namespace ft
 			typedef typename ft::iterator_traits<T*>::reference			reference;
 			typedef typename ft::iterator_traits<T*>::iterator_category  iterator_category;
 
-        private:
+        protected:
             pointer _current;
 
         public:
         //Constructors/Destructor/Assignation
-            bidirectionnal() : _current(NULL){};
+            bidirectionnal() : _current(NULL){;};
 
-			explicit bidirectionnal(pointer it) : _current(it){};
+			bidirectionnal(pointer it) : _current(it){;};
             
 			template <class iter>
-			bidirectionnal (const bidirectionnal<iter> & it) {
-				iter * tmp;
-				tmp = _current;
-				tmp = it.get_current();
-				_current = tmp;
+			bidirectionnal (const bidirectionnal<iter> & it): _current(it.get_current()) {
+				// iter * tmp;
+				// tmp = _current;
+				// tmp = it.get_current();
+				// _current = tmp;
 			};
 
-			explicit bidirectionnal(T it) : _current(it){};
+
+			bidirectionnal(T it) : _current(it.get_curent()){;};
 
 			~bidirectionnal(){};
 			
@@ -48,6 +49,14 @@ namespace ft
 				return _current;
 			}
 
+			iterator_type base() const{
+				// bidirectionnal tmp = *this;
+
+				// tmp._current = _current->decrement(tmp._current);
+				// return (iterator_type)tmp._current;
+				return *_current;
+			};
+
 			reference operator*() const{
 				return *_current;
 			};
@@ -55,6 +64,11 @@ namespace ft
 			pointer operator->() const{
 				return &(operator*());
 			};
+
+			template <class value>
+			bidirectionnal& operator= (value tmp){
+				_current->second = tmp;
+			}
 
             bidirectionnal& operator++(){
 				_current = _current->increment(_current);
@@ -68,15 +82,20 @@ namespace ft
 			};
 
 			bidirectionnal& operator--(){
-				_current--;
+				_current = _current->decrement(_current);
 				return *this;
 			};
 
 			bidirectionnal  operator--(int){
 				bidirectionnal tmp = *this;
-				--_current;
+				_current = _current->decrement(_current);
 				return tmp;
 			};
+
+			// template <class E>
+			// bidirectionnal operator=(E k){
+			// 	_current->second = k;
+			// }
     };
 
         template <class _Tp, class __Tp>

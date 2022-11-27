@@ -16,6 +16,7 @@ namespace ft
             typedef typename ft::iterator_traits<T>::pointer         	pointer;
 			typedef typename ft::iterator_traits<T>::reference			reference;
 			typedef typename ft::iterator_traits<T>::iterator_category  iterator_category;
+
 		protected:
 			pointer _current;
 
@@ -28,7 +29,7 @@ namespace ft
 			}
 
 
-			RBreverse_iterator(T it) : _current(it.get_current()){};
+			RBreverse_iterator(T it) : _current(it.get_current()){;};
 
 			explicit RBreverse_iterator(pointer it) : _current(it){};
 			
@@ -52,56 +53,55 @@ namespace ft
 			// pointer operator->()const{}
 
 			iterator_type base() const{
-				RBreverse_iterator tmp = *this;
-
-				++tmp._current;
-				return (iterator_type)tmp._current;
+			// 	// tmp._current = _current->decrement(tmp._current);
+			// 	// return (iterator_type)tmp._current;
+			// 	return _current;
+				return _current;
 			};
 
-			RBreverse_iterator operator+ (difference_type n) const{
-				RBreverse_iterator tmp = *this;
-				tmp._current -= n;
-				return tmp;
-			};
+			// RBreverse_iterator operator+ (difference_type n) const{
+			// 	RBreverse_iterator tmp = *this;
+			// 	tmp._current -= n;
+			// 	return tmp;
+			// };
 
-			RBreverse_iterator& operator++(){
-				--_current;
+            RBreverse_iterator& operator++(){
+				_current = _current->decrement(_current);
 				return *this;
 			};
             
 			RBreverse_iterator  operator++(int){
 				RBreverse_iterator tmp = *this;
-
-				--_current;
-				return tmp;
-			};
-            
-			RBreverse_iterator& operator+= (difference_type n){
-				_current -= n;
-				return (*this);
-			};
-
-			RBreverse_iterator& operator-= (difference_type n){
-				_current += n;
-				return (*this);
-			};
-
-			RBreverse_iterator operator- (difference_type n) const{
-				RBreverse_iterator tmp = *this;
-				tmp._current += n;
+				_current = _current->decrement(_current);
 				return tmp;
 			};
 
 			RBreverse_iterator& operator--(){
-				++_current;
+				_current = _current->increment(_current);
 				return *this;
 			};
 
 			RBreverse_iterator  operator--(int){
 				RBreverse_iterator tmp = *this;
-				++_current;
+				_current = _current->increment(_current);
 				return tmp;
 			};
+            
+			// RBreverse_iterator& operator+= (difference_type n){
+			// 	_current -= n;
+			// 	return (*this);
+			// };
+
+			// RBreverse_iterator& operator-= (difference_type n){
+			// 	_current += n;
+			// 	return (*this);
+			// };
+
+			// RBreverse_iterator operator- (difference_type n) const{
+			// 	RBreverse_iterator tmp = *this;
+			// 	tmp._current += n;
+			// 	return tmp;
+			// };
 
 			pointer operator->() const{
 				return &(operator*());

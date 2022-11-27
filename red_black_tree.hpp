@@ -24,15 +24,27 @@ namespace ft{
                 Node * rightChild;
                 Node * parent;
 
+                Node * root;
+
                 Node * sentinel;
 
                 Key first;
                 T second;
                 
+                Node& operator=(const T k){
+                    second = k;
+                }
+
                 Node* increment(Node* x) {
                     // if (x->first == Key() && x->second == T()){ // ??
                     //     while (1)
                     //         ;
+                    // }
+                    // if (x == sentinel || (x->first == key_type() && x->second == mapped_type())){
+                    //     x = x->root;
+                    //     while (x->leftChild != sentinel)
+                    //         x = x->leftChild;
+                    //     return x;
                     // }
                     Node * y = x;
 
@@ -40,8 +52,9 @@ namespace ft{
                         y = y->parent;
                     while (y->rightChild != sentinel)
                         y = y->rightChild;
-                    if (x == y)
+                    if (x == y){
                         return sentinel;
+                    }
                     if (x->rightChild->data.first != Key()){
 
                         x = x->rightChild;
@@ -65,10 +78,16 @@ namespace ft{
                 }
 
                 const Node* increment(const Node* x) const{
-                    if (x->first == Key() && x->second == T()){ // ??
-                        while (1)
-                            ;
-                    }
+                    // if (x->first == Key() && x->second == T()){ // ??
+                    //     while (1)
+                    //         ;
+                    // }
+                    // if (x == sentinel || (x->first == key_type() && x->second == mapped_type())){
+                    //     x = x->root;
+                    //     while (x->leftChild != sentinel)
+                    //         x = x->leftChild;
+                    //     return x;
+                    // }
                     const Node * y = x;
 
                     while (y->parent != NULL)
@@ -94,6 +113,80 @@ namespace ft{
                         }
 
                         if (x->rightChild != tmp)
+                            x = tmp;
+                    }
+                    return x;
+                }
+
+                Node* decrement(Node* x){
+                    Node * y = x;
+
+                    if (x == sentinel || (x->first == key_type() && x->second == mapped_type())){
+                        x = sentinel->root;
+                        while (x->rightChild != sentinel)
+                            x = x->rightChild;
+                        return x;
+                    }
+                    while (y->parent != NULL)
+                        y = y->parent;
+                    while (y->leftChild != sentinel)
+                        y = y->leftChild;
+                    if (x == y)
+                        return sentinel;
+                    if (x->leftChild->data.first != Key()){
+
+                        x = x->leftChild;
+
+                        while (x->rightChild->data.first != Key()){
+                            x = x->rightChild;
+                        }
+                    }
+                    else{
+                        Node* tmp = x->parent;
+
+                        while (x == tmp->leftChild){
+                            x = tmp;
+                            tmp = tmp->parent;
+                        }
+
+                        if (x->leftChild != tmp)
+                            x = tmp;
+                    }
+                    return x;
+                }
+
+                const Node* decrement(const Node* x) const{
+                    const Node * y = x;
+
+                    if (x == sentinel || (x->first == key_type() && x->second == mapped_type())){
+                        x = sentinel->root;
+                        while (x->rightChild != sentinel)
+                            x = x->rightChild;
+                        return x;
+                    }
+                    while (y->parent != NULL)
+                        y = y->parent;
+                    while (y->leftChild != sentinel)
+                        y = y->leftChild;
+                    if (x == y)
+                        return sentinel;
+                    if (x->leftChild->data.first != Key()){
+
+                        x = x->leftChild;
+
+                        while (x->rightChild->data.first != Key()){
+                            x = x->rightChild;
+                        }
+                    }
+                    else{
+                        const Node* tmp = x->parent;
+
+                        while (x == tmp->leftChild){
+                            x = tmp;
+                            tmp = tmp->parent;
+                        }
+
+                        if (x->leftChild != tmp)
                             x = tmp;
                     }
                     return x;
@@ -133,15 +226,16 @@ namespace ft{
                _TNULL->second = mapped_type();
                _TNULL->leftChild = NULL;
                _TNULL->rightChild = NULL;
+               _TNULL->sentinel = _TNULL;
                _TNULL->parent = NULL;
                _root = _TNULL;
-            };
+               _TNULL->root = _root;
+           };
 
             ~RBTree(){
                 recursiveDelete(_root);
                 _alloc.deallocate(_TNULL, 1);
             }
-            
 
             void recursiveDelete(nodePtr node){
                 if (node->leftChild == NULL && node->rightChild == NULL)
@@ -371,8 +465,8 @@ namespace ft{
                 _alloc.deallocate(toDelete, 1); // change with std allocator
                 if (tmpColor == BLACK)
                     deleteBalance(x);
-
-
+                _TNULL->root = _root;
+                _root->parent = NULL;
             }
 
             iterator insert(ft::pair<const key_type, mapped_type> key){
@@ -411,6 +505,8 @@ namespace ft{
                     return (iterator)node;
                 }
                 balanceTree(node);
+                _TNULL->root = _root;
+                _root->parent = NULL;
                 return (iterator)node;
             };
 
@@ -455,17 +551,18 @@ namespace ft{
             }
 
             iterator rend(){
-                return (iterator)maximum(_root);
+                return (iterator)_TNULL;
             }
 
             const_iterator rend()const {
-                return (const_iterator)maximum(_root);
+                return (const_iterator)_TNULL;
             }
 
             allocator getAlloc() const{
                 return _alloc;
             }
     };
+
 
 };
 #endif

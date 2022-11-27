@@ -58,17 +58,20 @@ namespace ft{
 
                 while (first != last){
                     // check if the value is already inside (create member function in RBTree)
-                    _root.insert(ft::make_pair(first->first, first->second));
+                    if (find(first->first) == end()){
+                        _root.insert(ft::make_pair(first->first, first->second));
+                        _size++;
+                    }
                     first++;
-                    _size++;
                 }
             };
 
             map (const map& x): _alloc(x._alloc), _size(x._size), _comparator(x._comparator), _root() {
             const_iterator it = x.begin();
-
+            
                 while (it != x.end()){
-                    _root.insert(it->data);
+                    if (find(it->first) == end())
+                        _root.insert(it->data);
                     it++;
                 }
             };
@@ -76,8 +79,7 @@ namespace ft{
             map& operator= (const map& x) { //voir si ça leak quand il existe déjà
             const_iterator it = x.begin();
 
-                if (_size != 0)
-                    clear();
+                clear();
                 // if (_size != 0){
                 //     _root.~RBTree();
                 // }
@@ -89,7 +91,8 @@ namespace ft{
                 _comparator = x._comparator;
 
                 while (it != x.end()){
-                    _root.insert(it->data);
+                    if (find(it->data.first) == end())
+                        _root.insert(it->data);
                     it++;
                 }
                 return *this;
@@ -251,32 +254,40 @@ namespace ft{
                 typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL){
                 
                 if (_size == 0){
-                    _root.insert(first->data);
+                    _root.insert(*first);
                     first++;
                     _size++;
                 }
 
                 while (first != last){
                     //check duplicates TO FIX
-                    _root.insert(first->data);
+                    if (find(first->first) == end())
+                    {
+                        _root.insert(*first);
+                        _size++;
+                    }
                     first++;
-                    _size++;
                 }
             };
 
             size_type erase (const key_type& k){
                 if (_size == 0)
+                    return 0;
+                if (find(k) != end()){
+                    _root.erase(k);
+                    _size--;
                     return 1;
-                _root.erase(k);
-                _size--;
-                return 1;
+                }
+                return 0;
             };
 
             void erase (iterator position){
                 if (_size == 0)
                     return ;
-                _root.erase(position->first);
-                _size--;
+                if (find(position->first) != end()){
+                    _root.erase(position->first);
+                    _size--;
+                }
             };
 
             void erase (iterator first, iterator last){
@@ -299,8 +310,10 @@ namespace ft{
 
                 j = 0;
                 while (j < i){
-                    _root.erase(value[j]);
-                    _size--;
+                    if (find(value[j]) != end()){
+                        _root.erase(value[j]);
+                        _size--;
+                    }
                     j++;
                 }
                 // if (_size == 0)
@@ -423,6 +436,56 @@ namespace ft{
                 return _alloc;
             };
     };
+
+        template< class Key, class T, class Compare, class Alloc >
+        bool operator==( const map<Key,T,Compare,Alloc>& lhs,
+                    const map<Key,T,Compare,Alloc>& rhs ){
+            if (lhs.size() != rhs.size())
+                return false;
+            else{
+                typename ft::map<Key,T>::iterator it = lhs.begin();
+                typename ft::map<Key,T>::iterator it2 = rhs.begin();
+
+                while (it != lhs.end() && it2 != rhs.end()){
+                    if (it->first != it2->first)
+                        return false;
+                    it++;
+                    it2++;
+                }
+                return true;
+            }
+            return true;
+        };
+
+        template< class Key, class T, class Compare, class Alloc >
+        bool operator!=( const map<Key,T,Compare,Alloc>& lhs,
+                 const map<Key,T,Compare,Alloc>& rhs ){
+            return !(lhs == rhs);
+        };
+
+        template< class Key, class T, class Compare, class Alloc >
+        bool operator< (const map<Key,T,Compare,Alloc>& lhs,
+                 const map<Key,T,Compare,Alloc>& rhs ){
+            return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+        }
+
+        template< class Key, class T, class Compare, class Alloc >
+        bool operator<=( const map<Key,T,Compare,Alloc>& lhs,
+                 const map<Key,T,Compare,Alloc>& rhs ){
+            return !(rhs < lhs);
+        };
+
+        template< class Key, class T, class Compare, class Alloc >
+        bool operator>( const map<Key,T,Compare,Alloc>& lhs,
+                const map<Key,T,Compare,Alloc>& rhs ){
+            return (rhs < lhs);
+        };
+
+        template< class Key, class T, class Compare, class Alloc >
+        bool operator>=( const map<Key,T,Compare,Alloc>& lhs,
+                 const map<Key,T,Compare,Alloc>& rhs){
+            return !(lhs < rhs);
+        };
 };
 
 #endif
