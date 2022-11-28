@@ -24,7 +24,7 @@ namespace ft{
         public:
             typedef Key                                                     key_type;
             typedef T                                                       mapped_type;
-            typedef RBTree<key_type, mapped_type>                           tree;
+            typedef RBTree<Key, T>                           tree;
             typedef typename ft::pair<const Key, T>                         value_type;
             typedef Compare                                                 key_compare;
             typedef Alloc                                                   allocator_type;
@@ -55,9 +55,13 @@ namespace ft{
             template <class InputIterator> 
             map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(),
                 typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL): _alloc(alloc), _size(0), _comparator(comp), _root(){
+                
 
+                _root.insert(ft::make_pair(first->first, first->second));
+                _size++;
+                first++;
+                
                 while (first != last){
-                    // check if the value is already inside (create member function in RBTree)
                     if (find(first->first) == end()){
                         _root.insert(ft::make_pair(first->first, first->second));
                         _size++;
@@ -263,7 +267,7 @@ namespace ft{
                     //check duplicates TO FIX
                     if (find(first->first) == end())
                     {
-                        _root.insert(*first);
+                        _root.insert(ft::make_pair(first->first, first->second));
                         _size++;
                     }
                     first++;
@@ -300,7 +304,7 @@ namespace ft{
                     tmpfirst++;
                 }
 
-                key_type value[i];
+                key_type value[i + 1];
                 size_type j = 0;
                 while (first != last){
                     value[j] = first->first;

@@ -16,8 +16,10 @@ namespace ft{
 
         public:
 
-            struct Node
+            class Node
             {
+                public:
+
                 int color;
                 ft::pair<Key, T> data;
                 Node * leftChild;
@@ -30,10 +32,6 @@ namespace ft{
 
                 Key first;
                 T second;
-                
-                Node& operator=(const T k){
-                    second = k;
-                }
 
                 Node* increment(Node* x) {
                     // if (x->first == Key() && x->second == T()){ // ??
@@ -220,16 +218,18 @@ namespace ft{
             RBTree(const key_compare& comp = key_compare()) : _compare(comp){
                _TNULL = _alloc.allocate(1);
 
-               _TNULL->color = BLACK;
-               _TNULL->data = ft::make_pair(key_type(), mapped_type());
-               _TNULL->first = key_type();
-               _TNULL->second = mapped_type();
-               _TNULL->leftChild = NULL;
-               _TNULL->rightChild = NULL;
-               _TNULL->sentinel = _TNULL;
-               _TNULL->parent = NULL;
-               _root = _TNULL;
-               _TNULL->root = _root;
+                _TNULL->color = BLACK;
+                _TNULL->data = ft::make_pair(key_type(), mapped_type());
+                Key t = Key();
+                _TNULL->first = t;
+                T f = T();
+                _TNULL->second = f;
+                _TNULL->leftChild = NULL;
+                _TNULL->rightChild = NULL;
+                _TNULL->sentinel = _TNULL;
+                _TNULL->parent = NULL;
+                _root = _TNULL;
+                _TNULL->root = _root;
            };
 
             ~RBTree(){
@@ -413,9 +413,6 @@ namespace ft{
             }
 
             void erase(key_type k){
-
-
-
                 nodePtr node = _root;
                 nodePtr toDelete = _TNULL;
 
