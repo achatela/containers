@@ -25,8 +25,8 @@ namespace ft{
             ~pair (){return ;};
 
             pair& operator= (const pair& pr){
-                first = pr.first;
-                second = pr.second;
+                this->first = pr.first;
+                this->second = pr.second;
 
                 return *this;
             };

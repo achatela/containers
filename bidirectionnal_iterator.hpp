@@ -35,7 +35,7 @@ namespace ft
 			};
 
 
-			bidirectionnal(T it) : _current(it.get_curent()){;};
+			bidirectionnal(T it) : _current(it.get_current()){;};
 
 			~bidirectionnal(){};
 			
@@ -49,13 +49,6 @@ namespace ft
 				return _current;
 			}
 
-			iterator_type base() const{
-				// bidirectionnal tmp = *this;
-
-				// tmp._current = _current->decrement(tmp._current);
-				// return (iterator_type)tmp._current;
-				return *_current;
-			};
 
 			reference operator*() const{
 				return *_current;

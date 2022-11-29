@@ -24,7 +24,7 @@ namespace ft{
         public:
             typedef Key                                                     key_type;
             typedef T                                                       mapped_type;
-            typedef RBTree<Key, T>                           tree;
+            typedef RBTree<Key, T, Compare>                           tree;
             typedef typename ft::pair<const Key, T>                         value_type;
             typedef Compare                                                 key_compare;
             typedef Alloc                                                   allocator_type;
@@ -36,7 +36,7 @@ namespace ft{
             typedef typename tree::const_iterator                           const_iterator;
             typedef typename ft::RBreverse_iterator<iterator>               reverse_iterator;       
             typedef typename ft::RBreverse_iterator<const_iterator>         const_reverse_iterator; 
-            typedef std::ptrdiff_t                                          difference_type;
+            typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
             typedef std::size_t                                             size_type;
 
         private:
@@ -54,12 +54,15 @@ namespace ft{
 
             template <class InputIterator> 
             map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(),
-                typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL): _alloc(alloc), _size(0), _comparator(comp), _root(){
+                typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL): _alloc(alloc), _size(0), _comparator(comp), _root(_comparator){
                 
-
-                _root.insert(ft::make_pair(first->first, first->second));
-                _size++;
-                first++;
+                if (first != last){
+                    if (find(first->first) == end()){
+                        _root.insert(ft::make_pair(first->first, first->second));
+                        _size++;
+                    }
+                    first++;
+                }
                 
                 while (first != last){
                     if (find(first->first) == end()){
@@ -70,7 +73,7 @@ namespace ft{
                 }
             };
 
-            map (const map& x): _alloc(x._alloc), _size(x._size), _comparator(x._comparator), _root() {
+            map (const map& x): _alloc(x._alloc), _size(x._size), _comparator(x._comparator), _root(_comparator) {
             const_iterator it = x.begin();
             
                 while (it != x.end()){
@@ -330,10 +333,10 @@ namespace ft{
             };
 
             void swap (map& x){
-                std::swap(this->_root, x._root);
-                std::swap(this->_size, x._size);
-                std::swap(this->_comparator, x._comparator);
-                std::swap(this->_alloc, x._alloc);
+
+                std::swap(*this, x);
+                // std::swap(this->_comparator, x._comparator);
+                // std::swap(this->_alloc, x._alloc);
             };
 
             void clear(){

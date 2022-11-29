@@ -11,7 +11,7 @@
 
 namespace ft{
 
-    template <class Key, class T>//, class Alloc = std::allocator<ft::pair<const Key, T>>
+    template <class Key, class T, class Compare>//, class Alloc = std::allocator<ft::pair<const Key, T>>
     class RBTree{
 
         public:
@@ -53,11 +53,11 @@ namespace ft{
                     if (x == y){
                         return sentinel;
                     }
-                    if (x->rightChild->data.first != Key()){
+                    if (x->rightChild->first != Key()){
 
                         x = x->rightChild;
 
-                        while (x->leftChild->data.first != Key()){
+                        while (x->leftChild->first != Key()){
                             x = x->leftChild;
                         }
                     }
@@ -94,11 +94,11 @@ namespace ft{
                         y = y->rightChild;
                     if (x == y)
                         return sentinel;
-                    if (x->rightChild->data.first != Key()){
+                    if (x->rightChild->first != Key()){
 
                         x = x->rightChild;
 
-                        while (x->leftChild->data.first != Key()){
+                        while (x->leftChild->first != Key()){
                             x = x->leftChild;
                         }
                     }
@@ -131,11 +131,11 @@ namespace ft{
                         y = y->leftChild;
                     if (x == y)
                         return sentinel;
-                    if (x->leftChild->data.first != Key()){
+                    if (x->leftChild->first != Key()){
 
                         x = x->leftChild;
 
-                        while (x->rightChild->data.first != Key()){
+                        while (x->rightChild->first != Key()){
                             x = x->rightChild;
                         }
                     }
@@ -168,11 +168,11 @@ namespace ft{
                         y = y->leftChild;
                     if (x == y)
                         return sentinel;
-                    if (x->leftChild->data.first != Key()){
+                    if (x->leftChild->first != Key()){
 
                         x = x->leftChild;
 
-                        while (x->rightChild->data.first != Key()){
+                        while (x->rightChild->first != Key()){
                             x = x->rightChild;
                         }
                     }
@@ -193,7 +193,7 @@ namespace ft{
 
             typedef Key                                                     key_type;
             typedef T                                                       mapped_type;
-            typedef std::less<key_type>                                     key_compare;
+            typedef Compare                                     key_compare;
             typedef typename ft::bidirectionnal<Node>                 iterator;
             typedef typename ft::bidirectionnal<const Node>           const_iterator;
             typedef typename std::allocator<Node>                     allocator;
@@ -207,6 +207,9 @@ namespace ft{
             nodePtr         _root;
             nodePtr         _TNULL;
             key_compare     _compare;
+            std::allocator<mapped_type> _alloc_mapped;
+            std::allocator<key_type>    _alloc_key;
+            std::allocator<ft::pair<key_type, mapped_type> >    _alloc_pair;
 
         public:
         //# include "map_display.hpp"
@@ -216,14 +219,13 @@ namespace ft{
             }
 
             RBTree(const key_compare& comp = key_compare()) : _compare(comp){
-               _TNULL = _alloc.allocate(1);
+                _TNULL = _alloc.allocate(1);
 
                 _TNULL->color = BLACK;
-                _TNULL->data = ft::make_pair(key_type(), mapped_type());
-                Key t = Key();
-                _TNULL->first = t;
-                T f = T();
-                _TNULL->second = f;
+                // _TNULL->data = ft::make_pair(key_type(), alloc_mapped.construct(, val));
+                _alloc_pair.construct(&_TNULL->data, ft::make_pair(key_type(), mapped_type()));
+                _alloc_key.construct(&_TNULL->first, key_type());
+                _alloc_mapped.construct(&_TNULL->second, mapped_type());
                 _TNULL->leftChild = NULL;
                 _TNULL->rightChild = NULL;
                 _TNULL->sentinel = _TNULL;
@@ -234,6 +236,7 @@ namespace ft{
 
             ~RBTree(){
                 recursiveDelete(_root);
+                // _alloc_mapped.deallocate(&_TNULL->second, 1);
                 _alloc.deallocate(_TNULL, 1);
             }
 
@@ -244,6 +247,7 @@ namespace ft{
                     recursiveDelete(node->rightChild);
                 if (node->leftChild != NULL)
                     recursiveDelete(node->leftChild);
+                // _alloc_mapped.deallocate(&node->second, 1);
                 _alloc.deallocate(node, 1);
             }
 
@@ -469,9 +473,11 @@ namespace ft{
             iterator insert(ft::pair<const key_type, mapped_type> key){
                 nodePtr node = _alloc.allocate(1);
                 node->parent = NULL;
-                node->data = key;
-                node->first = key.first;
-                node->second = key.second;
+                // node->data = key;
+                _alloc_pair.construct(&node->data, key);
+                _alloc_key.construct(&node->first, key.first);
+                _alloc_mapped.construct(&node->second, key.second);
+                // node->second = key.second;
                 node->leftChild = _TNULL;
                 node->rightChild = _TNULL;
                 node->sentinel = _TNULL;

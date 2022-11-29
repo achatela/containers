@@ -19,6 +19,7 @@ namespace ft
 
 		protected:
 			pointer _current;
+			T	_base;
 
 		public:
             RBreverse_iterator() : _current(NULL){};
@@ -29,9 +30,9 @@ namespace ft
 			}
 
 
-			RBreverse_iterator(T it) : _current(it.get_current()){;};
+			RBreverse_iterator(T it) : _current(it.get_current()), _base(it.get_current()){};
 
-			explicit RBreverse_iterator(pointer it) : _current(it){};
+			explicit RBreverse_iterator(pointer it) : _current(it), _base(it){};
 			
 			~RBreverse_iterator(){};
 		
@@ -43,7 +44,7 @@ namespace ft
 
             
 			template <class iter>
-			RBreverse_iterator (const RBreverse_iterator<iter> & it) : _current(it.get_current()){};
+			RBreverse_iterator (const RBreverse_iterator<iter> & it) : _current(it.get_current()), _base(it.get_current()){};
 
 
 			reference operator*() const{
@@ -53,10 +54,8 @@ namespace ft
 			// pointer operator->()const{}
 
 			iterator_type base() const{
-			// 	// tmp._current = _current->decrement(tmp._current);
-			// 	// return (iterator_type)tmp._current;
-			// 	return _current;
-				return _current;
+				T tmp(_base.get_current());
+				return tmp;
 			};
 
 			// RBreverse_iterator operator+ (difference_type n) const{
@@ -66,23 +65,34 @@ namespace ft
 			// };
 
             RBreverse_iterator& operator++(){
+				// _base = _base->increment(_base);
+				_base--;
 				_current = _current->decrement(_current);
 				return *this;
 			};
             
 			RBreverse_iterator  operator++(int){
 				RBreverse_iterator tmp = *this;
+				// _base = _base->increment(_base);
+
+				_base--;
 				_current = _current->decrement(_current);
 				return tmp;
 			};
 
 			RBreverse_iterator& operator--(){
+				// _base = _base->decrement(_base);
+
+				_base++;
 				_current = _current->increment(_current);
 				return *this;
 			};
 
 			RBreverse_iterator  operator--(int){
 				RBreverse_iterator tmp = *this;
+				// _base = _base->decrement(_base);
+
+				_base++;
 				_current = _current->increment(_current);
 				return tmp;
 			};
@@ -107,9 +117,9 @@ namespace ft
 				return &(operator*());
 			};
 
-			reference operator[] (difference_type n) const{
-				return *(_current - n);
-			};
+			// reference operator[] (difference_type n) const{
+			// 	return *(_current - n);
+			// };
     };
 
 			template <class _Tp, class __Tp>
