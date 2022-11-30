@@ -33,6 +33,10 @@ namespace ft{
                 Key first;
                 T second;
 
+                Node& operator*() const{
+                    return *first;
+                };
+
                 Node* increment(Node* x) {
                     // if (x->first == Key() && x->second == T()){ // ??
                     //     while (1)
@@ -193,7 +197,7 @@ namespace ft{
 
             typedef Key                                                     key_type;
             typedef T                                                       mapped_type;
-            typedef Compare                                     key_compare;
+            typedef Compare                                                 key_compare;
             typedef typename ft::bidirectionnal<Node>                 iterator;
             typedef typename ft::bidirectionnal<const Node>           const_iterator;
             typedef typename std::allocator<Node>                     allocator;

@@ -28,7 +28,6 @@ namespace ft{
             }
             return (first2!=last2);   
         };
-
 }
 
 

@@ -23,31 +23,25 @@ namespace ft
         public:
         //Constructors/Destructor/Assignation
             bidirectionnal() : _current(NULL){;};
-
-			bidirectionnal(pointer it) : _current(it){;};
-            
-			template <class iter>
-			bidirectionnal (const bidirectionnal<iter> & it): _current(it.get_current()) {
-				// iter * tmp;
-				// tmp = _current;
-				// tmp = it.get_current();
-				// _current = tmp;
-			};
-
-
-			bidirectionnal(T it) : _current(it.get_current()){;};
-
-			~bidirectionnal(){};
 			
 			operator bidirectionnal<const T>() const{
 				return (bidirectionnal<T const>(this->_current));
 			};
+
+			bidirectionnal(pointer it) : _current(it){;};
+            
+			bidirectionnal(T it) : _current(it.get_current()){;};
+
+			~bidirectionnal(){};
 
         //
 
 			pointer get_current() const{
 				return _current;
 			}
+
+			template <class iter>
+			bidirectionnal (const bidirectionnal<iter> & it) : _current(it.get_current()){};
 
 
 			reference operator*() const{
@@ -58,10 +52,10 @@ namespace ft
 				return &(operator*());
 			};
 
-			template <class value>
-			bidirectionnal& operator= (value tmp){
-				_current->second = tmp;
-			}
+			// template <class value>
+			// bidirectionnal& operator= (value tmp){
+			// 	_current->second = tmp;
+			// }
 
             bidirectionnal& operator++(){
 				_current = _current->increment(_current);
@@ -85,10 +79,9 @@ namespace ft
 				return tmp;
 			};
 
-			// template <class E>
-			// bidirectionnal operator=(E k){
-			// 	_current->second = k;
-			// }
+			bool operator<(const bidirectionnal<T> &rhs) const{
+				return this->_current < rhs->_current;
+			}
     };
 
         template <class _Tp, class __Tp>
@@ -100,6 +93,12 @@ namespace ft
             inline bool operator!=(const bidirectionnal<_Tp> &lhs, const bidirectionnal<__Tp> &rhs){
             return (lhs.get_current() != rhs.get_current());
         };
+
+		template <class _Tp, class __Tp>
+		inline bool operator<(const bidirectionnal<_Tp> &lhs, const bidirectionnal<__Tp> &rhs){
+			return (rhs.get_current() < lhs.get_current());
+		};
+
 
 };
 

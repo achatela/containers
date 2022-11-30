@@ -450,8 +450,8 @@ namespace ft{
             if (lhs.size() != rhs.size())
                 return false;
             else{
-                typename ft::map<Key,T>::iterator it = lhs.begin();
-                typename ft::map<Key,T>::iterator it2 = rhs.begin();
+                typename ft::map<Key,T>::const_iterator it = lhs.begin();
+                typename ft::map<Key,T>::const_iterator it2 = rhs.begin();
 
                 while (it != lhs.end() && it2 != rhs.end()){
                     if (it->first != it2->first)
@@ -473,7 +473,20 @@ namespace ft{
         template< class Key, class T, class Compare, class Alloc >
         bool operator< (const map<Key,T,Compare,Alloc>& lhs,
                  const map<Key,T,Compare,Alloc>& rhs ){
-            return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+            typename ft::map<Key,T,Compare,Alloc>::const_iterator first1 = lhs.begin();
+            typename ft::map<Key,T,Compare,Alloc>::const_iterator first2 = rhs.begin();
+            typename ft::map<Key,T,Compare,Alloc>::const_iterator last1 = lhs.begin();
+            typename ft::map<Key,T,Compare,Alloc>::const_iterator last2 = rhs.begin();
+            Compare comp;
+
+            while (first1!=last1){
+                if (first2==last2 || comp(first2->first, first1->first) == true)
+                    return false;
+                else if (comp(first1->first, first2->first) == true)
+                    return true;
+                ++first1; ++first2;
+            }
+            return (first2!=last2); 
         }
 
         template< class Key, class T, class Compare, class Alloc >
