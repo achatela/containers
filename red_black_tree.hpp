@@ -568,6 +568,16 @@ namespace ft{
             allocator getAlloc() const{
                 return _alloc;
             }
+
+            void swap(RBTree & x){
+                std::swap(_alloc, x._alloc);
+                std::swap(_compare, x._compare);
+                std::swap(_root, x._root);
+                std::swap(_TNULL, x._TNULL);
+                std::swap(_alloc_mapped, x._alloc_mapped);
+                std::swap(_alloc_key, x._alloc_key);
+                std::swap(_alloc_pair, x._alloc_pair);
+            }
     };
 
 
