@@ -1,6 +1,8 @@
 #ifndef PAIR_HPP
 # define PAIR_HPP
 
+# include "red_black_tree.hpp"
+
 namespace ft{
 
     template <class T1, class T2>

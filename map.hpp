@@ -78,7 +78,7 @@ namespace ft{
             
                 while (it != x.end()){
                     if (find(it->first) == end())
-                        _root.insert(it->data);
+                        _root.insert(ft::make_pair(it->first, it->second));
                     it++;
                 }
             };
@@ -98,8 +98,8 @@ namespace ft{
                 _comparator = x._comparator;
 
                 while (it != x.end()){
-                    if (find(it->data.first) == end())
-                        _root.insert(it->data);
+                    if (find(it->first) == end())
+                        _root.insert(ft::make_pair(it->first, it->second));
                     it++;
                 }
                 return *this;
@@ -343,6 +343,7 @@ namespace ft{
                     typedef bool result_type;
                     typedef value_type first_argument_type;
                     typedef value_type second_argument_type;
+
                     bool operator() (const typename tree::Node &x, const typename tree::Node& y) const{
                         return comp(make_pair(x.first, x.second).first, make_pair(y.first, y.second).first);
                     }
@@ -513,7 +514,7 @@ namespace ft{
         template< class Key, class T, class Compare, class Alloc >
         bool operator<=( const map<Key,T,Compare,Alloc>& lhs,
                  const map<Key,T,Compare,Alloc>& rhs ){
-            return !(lhs > rhs);
+            return !(rhs < lhs);
         };
 
         template< class Key, class T, class Compare, class Alloc >
@@ -526,6 +527,12 @@ namespace ft{
         bool operator>=( const map<Key,T,Compare,Alloc>& lhs,
                  const map<Key,T,Compare,Alloc>& rhs){
             return !(lhs < rhs);
+        };
+
+        template< class Key, class T, class Compare, class Alloc >
+        void swap( ft::map<Key,T,Compare,Alloc>& lhs,
+                ft::map<Key,T,Compare,Alloc>& rhs ){
+                    lhs.swap(rhs);
         };
 };
 

@@ -27,14 +27,15 @@ namespace ft{
                 Node * parent;
 
                 Node * root;
+                Node * end;
 
                 Node * sentinel;
 
                 Key first;
                 T second;
 
-                Node& operator*() const{
-                    return *first;
+                pair<Key, T> operator*() const{
+                    return ft::make_pair(first, second);
                 };
 
                 Node* increment(Node* x) {
@@ -50,12 +51,20 @@ namespace ft{
                     // }
                     Node * y = x;
 
-                    while (y->parent != NULL)
-                        y = y->parent;
+                    // while (y->parent != NULL)
+                    //     y = y->parent;
+                    y = sentinel->root;
                     while (y->rightChild != sentinel)
                         y = y->rightChild;
-                    if (x == y){
+                    if (x->first == y->first){
                         return sentinel;
+                    }
+                    if (x == sentinel){// || (x->first == key_type())){// && x->second == mapped_type())){
+                        y = sentinel->root;
+                        while (y->leftChild != x->sentinel){
+                            y = y->leftChild;
+                        }
+                        return y;
                     }
                     if (x->rightChild->first != Key()){
 
@@ -92,12 +101,23 @@ namespace ft{
                     // }
                     const Node * y = x;
 
-                    while (y->parent != NULL)
-                        y = y->parent;
+
+                    // while (y->parent != NULL)
+                    //     y = y->parent;
+                    y = sentinel->root;
                     while (y->rightChild != sentinel)
                         y = y->rightChild;
-                    if (x == y)
+                    if (x->first == y->first)
                         return sentinel;
+                    if (x == sentinel){// || (x->first == key_type())){// && x->second == mapped_type())){
+                        y = sentinel->root;
+                        while (y->leftChild != x->sentinel){
+                            y = y->leftChild;
+                        }
+                        if (x == y)
+                            return sentinel;
+                        return y;
+                    }
                     if (x->rightChild->first != Key()){
 
                         x = x->rightChild;
@@ -123,18 +143,22 @@ namespace ft{
                 Node* decrement(Node* x){
                     Node * y = x;
 
-                    if (x == sentinel || (x->first == key_type() && x->second == mapped_type())){
-                        x = sentinel->root;
-                        while (x->rightChild != sentinel)
-                            x = x->rightChild;
-                        return x;
-                    }
-                    while (y->parent != NULL)
-                        y = y->parent;
+                    // while (y->parent != NULL)
+                        // y = y->parent;
+                    y = sentinel->root;
                     while (y->leftChild != sentinel)
                         y = y->leftChild;
-                    if (x == y)
+                    if (x->first == y->first)
                         return sentinel;
+                    if (x == sentinel){// || (x->first == key_type())){// && x->second == mapped_type())){
+                        y = sentinel->root;
+                        while (y->rightChild != x->sentinel){
+                            y = y->rightChild;
+                        }
+                        if (x == y)
+                            return sentinel;
+                        return y;
+                    }
                     if (x->leftChild->first != Key()){
 
                         x = x->leftChild;
@@ -160,18 +184,22 @@ namespace ft{
                 const Node* decrement(const Node* x) const{
                     const Node * y = x;
 
-                    if (x == sentinel || (x->first == key_type() && x->second == mapped_type())){
-                        x = sentinel->root;
-                        while (x->rightChild != sentinel)
-                            x = x->rightChild;
-                        return x;
-                    }
-                    while (y->parent != NULL)
-                        y = y->parent;
+                    // while (y->parent != NULL)
+                    //     y = y->parent;
+                    y = sentinel->root;
                     while (y->leftChild != sentinel)
                         y = y->leftChild;
-                    if (x == y)
+                    if (x->first == y->first)
                         return sentinel;
+                    if (x == sentinel){ //|| (x->first == key_type())){// && x->second == mapped_type())){
+                        y = sentinel->root;
+                        while (y->rightChild != x->sentinel){
+                            y = y->rightChild;
+                        if (x == y)
+                            return sentinel;
+                        }
+                        return y;
+                    }
                     if (x->leftChild->first != Key()){
 
                         x = x->leftChild;
@@ -218,9 +246,7 @@ namespace ft{
         public:
         //# include "map_display.hpp"
 
-            nodePtr getRoot(){
-                return _root;
-            }
+            
 
             RBTree(const key_compare& comp = key_compare()) : _compare(comp){
                 _TNULL = _alloc.allocate(1);
@@ -236,7 +262,12 @@ namespace ft{
                 _TNULL->parent = NULL;
                 _root = _TNULL;
                 _TNULL->root = _root;
+
            };
+           
+           nodePtr getRoot(){
+                return _root;
+            }
 
             ~RBTree(){
                 recursiveDelete(_root);
@@ -282,6 +313,7 @@ namespace ft{
                     node->parent->rightChild = tmp;
                 tmp->leftChild = node;
                 node->parent = tmp;
+                _TNULL->root = _root;
             }
 
             void rightRotate(nodePtr node){
@@ -299,6 +331,7 @@ namespace ft{
                     node->parent->leftChild = tmp;
                 tmp->rightChild = node;
                 node->parent = tmp;
+                _TNULL->root = _root;
             }
 
             void balanceTree(nodePtr node){
@@ -346,6 +379,7 @@ namespace ft{
                         break;
                 }
                 _root->color = BLACK;
+                _TNULL->root = _root;
             }
 
             void transplant(nodePtr left, nodePtr right){
@@ -356,6 +390,7 @@ namespace ft{
                 else
                     left->parent->rightChild = right;
                 right->parent = left->parent;
+                _TNULL->root = _root;
             }
 
             void deleteBalance(nodePtr x){
@@ -418,6 +453,7 @@ namespace ft{
                     }
                 }
                 x->color = 0;
+                _TNULL->root = _root;
             }
 
             void erase(key_type k){
@@ -433,12 +469,10 @@ namespace ft{
                         node = node->leftChild;
                 }
 
-                if (toDelete == _TNULL)
+                if (toDelete == _TNULL){
+                    _TNULL->root = _root;
                     return ;
-
-
-
-
+                }
 
                 nodePtr x;
                 nodePtr y = toDelete;
@@ -470,8 +504,8 @@ namespace ft{
                 _alloc.deallocate(toDelete, 1); // change with std allocator
                 if (tmpColor == BLACK)
                     deleteBalance(x);
-                _TNULL->root = _root;
                 _root->parent = NULL;
+                _TNULL->root = _root;
             }
 
             iterator insert(ft::pair<const key_type, mapped_type> key){
@@ -506,14 +540,62 @@ namespace ft{
                     y->rightChild = node;
                 if (node->parent == NULL){
                     node->color = BLACK;
+                    _TNULL->root = _root;
                     return (iterator)node;
                 }
                 if (node->parent->parent == NULL){
+                    _TNULL->root = _root;
                     return (iterator)node;
                 }
                 balanceTree(node);
-                _TNULL->root = _root;
                 _root->parent = NULL;
+                _TNULL->root = _root;
+                return (iterator)node;
+            };
+
+             iterator insert(Node tmp){
+                ft::pair<Key, T> key = ft::make_pair(tmp.first, tmp.second);
+                nodePtr node = _alloc.allocate(1);
+                node->parent = NULL;
+                // node->data = key;
+                _alloc_pair.construct(&node->data, key);
+                _alloc_key.construct(&node->first, key.first);
+                _alloc_mapped.construct(&node->second, key.second);
+                // node->second = key.second;
+                node->leftChild = _TNULL;
+                node->rightChild = _TNULL;
+                node->sentinel = _TNULL;
+                node->color = RED;
+
+                nodePtr y = NULL;
+                nodePtr x = _root;
+
+                while (x != _TNULL){
+                    y = x;
+                    if (_compare(node->data.first, x->data.first) == true)
+                        x = x->leftChild;
+                    else
+                        x = x->rightChild;
+                }
+                node->parent = y;
+                if (y == NULL)
+                    _root = node;
+                else if (_compare(node->data.first, y->data.first) == true)
+                    y->leftChild = node;
+                else
+                    y->rightChild = node;
+                if (node->parent == NULL){
+                    node->color = BLACK;
+                    _TNULL->root = _root;
+                    return (iterator)node;
+                }
+                if (node->parent->parent == NULL){
+                    _TNULL->root = _root;
+                    return (iterator)node;
+                }
+                balanceTree(node);
+                _root->parent = NULL;
+                _TNULL->root = _root;
                 return (iterator)node;
             };
 

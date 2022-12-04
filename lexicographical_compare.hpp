@@ -34,13 +34,13 @@ namespace ft{
     bool lexicographical_compare_map (InputIterator1 first1, InputIterator1 last1,InputIterator2 first2, InputIterator2 last2){
         while (first1!=last1)
         {
-            if (first2==last2 || first2->first < first1->first)
+            if (first2==last2 || first2->second < first1->second)
                 return false;
-            else if (first1->first < first2->first)
+            else if (first1->second < first2->second)
                 return true;
             ++first1; ++first2;
         }
-        return (first2->first!=last2->first);     
+        return (first2!=last2);     
     };
 
 
@@ -49,9 +49,9 @@ namespace ft{
         InputIterator2 first2, InputIterator2 last2, Compare comp){
             while (first1!=last1)
             {
-                if (first2==last2 || comp(first2->first, first1->first) == true)
+                if (first2==last2 || comp(first2->second, first1->second) == true)
                     return false;
-                else if (comp(first2->first, first1->first) == true)
+                else if (comp(first2->second, first1->second) == true)
                     return true;
                 ++first1; ++first2;
             }
