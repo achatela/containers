@@ -45,7 +45,7 @@ namespace ft
 
 
 			reference operator*() const{
-				return (reference)*_current;
+				return *_current;
 			};
 
 			pointer operator->() const{

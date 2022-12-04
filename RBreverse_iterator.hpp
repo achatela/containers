@@ -30,7 +30,7 @@ namespace ft
 			}
 
 
-			RBreverse_iterator(T it) : _current(it.get_current()), _base(it.get_current()){};
+			RBreverse_iterator(T it) : _current(it.get_current()), _base(it.get_current()){;};
 
 			explicit RBreverse_iterator(pointer it) : _current(it), _base(it){};
 			
@@ -54,8 +54,7 @@ namespace ft
 			// pointer operator->()const{}
 
 			iterator_type base() const{
-				T tmp(_base.get_current());
-				return tmp;
+				return _current;
 			};
 
 			// RBreverse_iterator operator+ (difference_type n) const{
@@ -129,7 +128,7 @@ namespace ft
 
 			template <class _Tp, class __Tp>
 			inline bool operator!=(const RBreverse_iterator<_Tp> &lhs, const RBreverse_iterator<__Tp> &rhs){
-				return (lhs.get_current() != rhs.get_current());
+				return !(lhs == rhs);
 			};
 
 			template <class _Tp, class __Tp>

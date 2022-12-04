@@ -282,7 +282,6 @@ namespace ft{
                     recursiveDelete(node->rightChild);
                 if (node->leftChild != NULL)
                     recursiveDelete(node->leftChild);
-                // _alloc_mapped.deallocate(&node->second, 1);
                 _alloc.deallocate(node, 1);
             }
 
@@ -627,7 +626,7 @@ namespace ft{
 
             const_iterator rbegin()const {
                 if (_root == _TNULL)
-                    return (iterator)_TNULL;
+                    return (const_iterator)_TNULL;
                 return (const_iterator)maximum(_root);
             }
 
