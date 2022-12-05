@@ -24,7 +24,6 @@ namespace ft{
         public:
             typedef Key                                                     key_type;
             typedef T                                                       mapped_type;
-            typedef RBTree<Key, T, Compare>                           tree;
             typedef typename ft::pair<const Key, T>                         value_type;
             typedef Compare                                                 key_compare;
             typedef Alloc                                                   allocator_type;
@@ -32,14 +31,16 @@ namespace ft{
             typedef typename allocator_type::const_reference                const_reference;
             typedef typename allocator_type::pointer                        pointer;
             typedef typename allocator_type::const_pointer                  const_pointer;
-            typedef typename tree::iterator                                 iterator;
-            typedef typename tree::const_iterator                           const_iterator;
+            typedef typename RBTree<Key, T, Compare>::iterator                                 iterator;
+            typedef typename RBTree<Key, T, Compare>::const_iterator                           const_iterator;
             typedef typename ft::RBreverse_iterator<iterator>               reverse_iterator;       
             typedef typename ft::RBreverse_iterator<const_iterator>         const_reverse_iterator; 
             typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
             typedef std::size_t                                             size_type;
 
+
         private:
+            typedef RBTree<Key, T, Compare>                                 tree;
             allocator_type  _alloc;
             size_type       _size;
             key_compare     _comparator;
@@ -49,7 +50,7 @@ namespace ft{
 
         // //Constructors/destructor
 
-            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _comparator(comp), _root(){
+            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _comparator(comp), _root(_comparator){
             };
 
             template <class InputIterator> 
@@ -58,7 +59,7 @@ namespace ft{
                 
                 if (first != last){
                     if (find(first->first) == end()){
-                        _root.insert(ft::make_pair(first->first, first->second));
+                        _root.insert(*first);
                         _size++;
                     }
                     first++;
@@ -66,7 +67,7 @@ namespace ft{
                 
                 while (first != last){
                     if (find(first->first) == end()){
-                        _root.insert(ft::make_pair(first->first, first->second));
+                        _root.insert(*first);
                         _size++;
                     }
                     first++;
@@ -78,7 +79,7 @@ namespace ft{
             
                 while (it != x.end()){
                     if (find(it->first) == end())
-                        _root.insert(ft::make_pair(it->first, it->second));
+                        _root.insert(*it);
                     it++;
                 }
             };
@@ -99,7 +100,7 @@ namespace ft{
 
                 while (it != x.end()){
                     if (find(it->first) == end())
-                        _root.insert(ft::make_pair(it->first, it->second));
+                        _root.insert(*it);
                     it++;
                 }
                 return *this;
@@ -112,35 +113,35 @@ namespace ft{
         // // ITERATORS
 
             iterator begin(){
-                return iterator(_root.begin());
+                return (_root.begin());
             };
 
             const_iterator begin() const{
-                return const_iterator(_root.begin());
+                return (_root.begin());
             };
 
             iterator end(){
-                return iterator(_root.end());
+                return (_root.end());
             };
 
             const_iterator end() const {
-                return const_iterator(_root.end());
+                return (_root.end());
             };
 
             reverse_iterator rbegin(){
-                return reverse_iterator(_root.rbegin());
+                return (_root.rbegin());
             };
 
             const_reverse_iterator rbegin() const{
-                return const_reverse_iterator(_root.rbegin());
+                return (_root.rbegin());
             };
 
             reverse_iterator rend(){
-                return reverse_iterator(_root.rend());
+                return (_root.rend());
             };
 
             const_reverse_iterator rend() const{
-                return const_reverse_iterator(_root.rend());
+                return (_root.rend());
             };
 
         // // CAPACITY
@@ -156,7 +157,7 @@ namespace ft{
             };
 
             size_type max_size() const{
-                return _root.getAlloc().max_size(); // * 2 ?
+                return _root.getAlloc().max_size();
             };
 
         // // ELEMENT ACCESS
@@ -260,17 +261,16 @@ namespace ft{
             void insert (InputIterator first, InputIterator last,
                 typename enable_if<!ft::is_integral<InputIterator>::value>::type * = NULL){
                 
-                if (_size == 0){
+                if (_size == 0 && first != last){
                     _root.insert(*first);
                     first++;
                     _size++;
                 }
 
                 while (first != last){
-                    //check duplicates TO FIX
                     if (find(first->first) == end())
                     {
-                        _root.insert(ft::make_pair(first->first, first->second));
+                        _root.insert(*first);
                         _size++;
                     }
                     first++;
@@ -346,6 +346,10 @@ namespace ft{
 
                     bool operator() (const typename tree::Node &x, const typename tree::Node& y) const{
                         return comp(make_pair(x.first, x.second).first, make_pair(y.first, y.second).first);
+                    }
+
+                    bool operator() (const typename tree::Node &x, const pair <Key, T> & tmp) const{
+                        return comp(make_pair(x.first, x.second).first, tmp.first);
                     }
             };
 
@@ -494,20 +498,6 @@ namespace ft{
         template< class Key, class T, class Compare, class Alloc >
         bool operator< (const map<Key,T,Compare,Alloc>& lhs,
                  const map<Key,T,Compare,Alloc>& rhs ){
-            // typename ft::map<Key,T,Compare,Alloc>::const_iterator first1 = lhs.begin();
-            // typename ft::map<Key,T,Compare,Alloc>::const_iterator first2 = rhs.begin();
-            // typename ft::map<Key,T,Compare,Alloc>::const_iterator last1 = lhs.begin();
-            // typename ft::map<Key,T,Compare,Alloc>::const_iterator last2 = rhs.begin();
-            // Compare comp;
-
-            // while (first1!=last1){
-            //     if (first2==last2 || comp(first2->first, first1->first) == true)
-            //         return false;
-            //     else if (comp(first1->first, first2->first) == true)
-            //         return true;
-            //     first1++; first2++;
-            // }
-            // return (first2!=last2);
             return ft::lexicographical_compare_map(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
         }
 

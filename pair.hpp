@@ -8,6 +8,7 @@ namespace ft{
     template <class T1, class T2>
     struct pair{
 
+
         private:
             typedef T1  first_type;
             typedef T2  second_type;
@@ -17,12 +18,13 @@ namespace ft{
             second_type second;
 
         public:
-            pair (): first(T1()), second(T2()){};
+            pair (): first(first_type()), second(second_type()){};
 
             template<class U, class V>
             pair (const pair<U,V>& pr) : first(U(pr.first)), second(V(pr.second)){;};
 
-            pair (const first_type& a, const second_type& b) : first(T1(a)), second(T2(b)){;};
+            pair (const first_type& a, const second_type& b) : first(first_type(a)), second(second_type(b)){;};
+
 
             ~pair (){return ;};
 

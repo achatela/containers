@@ -22,17 +22,39 @@ namespace ft
 			T	_base;
 
 		public:
-            RBreverse_iterator() : _current(NULL){};
+            RBreverse_iterator() : _current(NULL), _base(NULL){};
 
+			template <class iter>
+			explicit RBreverse_iterator(iter it) : _current(it), _base(it){};
 
-			operator RBreverse_iterator<const T>() const{
-				return (RBreverse_iterator<T const>(this->_current));
-			}
+			template <class Type>
+			RBreverse_iterator(const RBreverse_iterator<Type>& it) : _current(it.get_current()), _base(it.get_current()){};
 
+			template <class Type>
+			RBreverse_iterator(const bidirectionnal<Type>& it) : _current(it.get_current()), _base(it.get_current()){};
 
-			RBreverse_iterator(T it) : _current(it.get_current()), _base(it.get_current()){;};
+			RBreverse_iterator(T it) : _current(it.get_current()), _base(it.get_current()){_current = _current->decrement(_current);};
 
-			explicit RBreverse_iterator(pointer it) : _current(it), _base(it){};
+			// RBreverse_iterator (const RBreverse_iterator & tmp){
+			// 	_current = tmp.get_current();
+			// 	_base = tmp.base();
+			// }
+
+			// RBreverse_iterator (const bidirectionnal<T> & tmp){
+			// 	_current = tmp.get_current();
+			// }
+
+			// template <class iter>
+			// RBreverse_iterator (const RBreverse_iterator<iter> & it) : _current(it.get_current()), _base(it.get_current()){};
+
+			// template <class iter>
+			// RBreverse_iterator (const bidirectionnal<iter> & it) : _current(it.get_current()), _base(it.get_current()){};
+
+			// operator RBreverse_iterator<const T>() const{
+			// 	return (RBreverse_iterator<T const>(this->_current));
+			// }
+
+			// RBreverse_iterator(pointer it) : _current(it), _base(it){std::cout << "111"<<std::endl;};
 			
 			~RBreverse_iterator(){};
 		
@@ -42,10 +64,6 @@ namespace ft
 				return _current;
 			}
 
-            
-			template <class iter>
-			RBreverse_iterator (const RBreverse_iterator<iter> & it) : _current(it.get_current()), _base(it.get_current()){};
-
 
 			reference operator*() const{
 				return *_current;
@@ -54,7 +72,7 @@ namespace ft
 			// pointer operator->()const{}
 
 			iterator_type base() const{
-				return _current;
+				return _base;
 			};
 
 			// RBreverse_iterator operator+ (difference_type n) const{
@@ -76,7 +94,7 @@ namespace ft
 
 				_base--;
 				_current = _current->decrement(_current);
-				return tmp;
+				return (RBreverse_iterator)tmp;
 			};
 
 			RBreverse_iterator& operator--(){

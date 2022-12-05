@@ -5,6 +5,7 @@
 # include "make_pair.hpp"
 # include <functional>
 # include "bidirectionnal_iterator.hpp"
+# include "RBreverse_iterator.hpp"
 
 # define BLACK 0
 # define RED 1
@@ -20,6 +21,7 @@ namespace ft{
             {
                 public:
 
+                bool empty;
                 int color;
                 ft::pair<Key, T> data;
                 Node * leftChild;
@@ -34,10 +36,7 @@ namespace ft{
                 Key first;
                 T second;
 
-                pair<Key, T> operator*() const{
-                    return ft::make_pair(first, second);
-                };
-
+                
                 Node* increment(Node* x) {
                     // if (x->first == Key() && x->second == T()){ // ??
                     //     while (1)
@@ -145,6 +144,8 @@ namespace ft{
 
                     // while (y->parent != NULL)
                         // y = y->parent;
+                    if (sentinel->empty == true)
+                        return sentinel;
                     y = sentinel->root;
                     while (y->leftChild != sentinel)
                         y = y->leftChild;
@@ -186,6 +187,8 @@ namespace ft{
 
                     // while (y->parent != NULL)
                     //     y = y->parent;
+                    if (sentinel->empty == true)
+                        return sentinel;
                     y = sentinel->root;
                     while (y->leftChild != sentinel)
                         y = y->leftChild;
@@ -221,6 +224,11 @@ namespace ft{
                     }
                     return x;
                 }
+
+
+                operator ft::pair<Key, T>(){
+                        return data;
+                }
             };
 
             typedef Key                                                     key_type;
@@ -228,6 +236,8 @@ namespace ft{
             typedef Compare                                                 key_compare;
             typedef typename ft::bidirectionnal<Node>                 iterator;
             typedef typename ft::bidirectionnal<const Node>           const_iterator;
+            typedef typename ft::RBreverse_iterator<iterator>               reverse_iterator;       
+            typedef typename ft::RBreverse_iterator<const_iterator>         const_reverse_iterator; 
             typedef typename std::allocator<Node>                     allocator;
             // typedef Node                                       node;
 
@@ -246,14 +256,12 @@ namespace ft{
         public:
         //# include "map_display.hpp"
 
-            
-
             RBTree(const key_compare& comp = key_compare()) : _compare(comp){
                 _TNULL = _alloc.allocate(1);
 
                 _TNULL->color = BLACK;
                 // _TNULL->data = ft::make_pair(key_type(), alloc_mapped.construct(, val));
-                _alloc_pair.construct(&_TNULL->data, ft::make_pair(key_type(), mapped_type()));
+                // _alloc_pair.construct(&_TNULL->data, ft::make_pair(key_type(), mapped_type()));
                 _alloc_key.construct(&_TNULL->first, key_type());
                 _alloc_mapped.construct(&_TNULL->second, mapped_type());
                 _TNULL->leftChild = NULL;
@@ -262,6 +270,7 @@ namespace ft{
                 _TNULL->parent = NULL;
                 _root = _TNULL;
                 _TNULL->root = _root;
+                _TNULL->empty = true;
 
            };
            
@@ -540,15 +549,18 @@ namespace ft{
                 if (node->parent == NULL){
                     node->color = BLACK;
                     _TNULL->root = _root;
+                    _TNULL->empty = false;
                     return (iterator)node;
                 }
                 if (node->parent->parent == NULL){
                     _TNULL->root = _root;
+                    _TNULL->empty = false;
                     return (iterator)node;
                 }
                 balanceTree(node);
                 _root->parent = NULL;
                 _TNULL->root = _root;
+                _TNULL->empty = false;
                 return (iterator)node;
             };
 
@@ -586,15 +598,18 @@ namespace ft{
                 if (node->parent == NULL){
                     node->color = BLACK;
                     _TNULL->root = _root;
+                    _TNULL->empty = false;
                     return (iterator)node;
                 }
                 if (node->parent->parent == NULL){
                     _TNULL->root = _root;
+                    _TNULL->empty = false;
                     return (iterator)node;
                 }
                 balanceTree(node);
                 _root->parent = NULL;
                 _TNULL->root = _root;
+                _TNULL->empty = false;
                 return (iterator)node;
             };
 
@@ -618,16 +633,16 @@ namespace ft{
                 return (const_iterator)x;
             }
 
-            iterator rbegin(){
-                if (_root == _TNULL)
-                    return (iterator)_TNULL;
-                return (iterator)maximum(_root);
+            reverse_iterator rbegin(){
+                // if (_root == _TNULL)
+                //     return (iterator)_TNULL;
+                return (reverse_iterator)maximum(_root);
             }
 
-            const_iterator rbegin()const {
-                if (_root == _TNULL)
-                    return (const_iterator)_TNULL;
-                return (const_iterator)maximum(_root);
+            const_reverse_iterator rbegin()const {
+                // if (_root == _TNULL)
+                    // return (const_iterator)_TNULL;
+                return (const_reverse_iterator)maximum(_root);
             }
 
             iterator end(){
@@ -638,12 +653,12 @@ namespace ft{
                 return (const_iterator)_TNULL;
             }
 
-            iterator rend(){
-                return (iterator)_TNULL;
+            reverse_iterator rend(){
+                return (reverse_iterator)_TNULL;
             }
 
-            const_iterator rend()const {
-                return (const_iterator)_TNULL;
+            const_reverse_iterator rend()const {
+                return (const_reverse_iterator)_TNULL;
             }
 
             allocator getAlloc() const{
