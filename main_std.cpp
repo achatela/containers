@@ -1,17 +1,18 @@
-#include "stack.hpp"
-#include "vector.hpp"
-#include "map.hpp"
+#include <stack>
+#include <vector>
+#include <map>
+#include <iostream>
 
 
 int main(void){
 
 	// VECTOR TESTS
 	std::cout << "Vector tests:" << std::endl << std::endl;
-	ft::vector<int> vct;
-	ft::vector<int> vct2(100, 100);
-	ft::vector<int> vct3;
-	ft::vector<int> vct4;
-	ft::vector<int> vct5(vct2);
+	std::vector<int> vct;
+	std::vector<int> vct2(100, 100);
+	std::vector<int> vct3;
+	std::vector<int> vct4;
+	std::vector<int> vct5(vct2);
 
 	for (int i = 0; i < 100; i++){
 		vct.push_back(i);
@@ -33,7 +34,6 @@ int main(void){
 		std::cout << "i: " << vct3[i] << " ";
 	}
 	std::cout << std::endl << std::endl;
-	std::cout << "vct4 assign with iterators:" << std::endl;
 	
 	return (0);
 }
