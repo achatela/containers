@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <string>
 
 class TestClass{
 
@@ -226,7 +227,122 @@ int main(void){
 	{
 		std::cout << "Stack<int>" << std::endl;
 		std::stack<int> stck;
+
+		std::cout << "Stck.empty: " << stck.empty() << std::endl;
+		std::cout << "Stck.size:" << stck.size() << std::endl;
+		stck.push(10);
+		std::cout << "Stck.size:" << stck.size() << std::endl;
+		std::cout << "Stck.top:" << stck.top() << std::endl;
+		std::cout << "Stck.empty: " << stck.empty() << std::endl;
+		stck.push(12345);
+		std::cout << "Stck.top:" << stck.top() << std::endl;
+		stck.pop();
+		std::cout << "Stck.top:" << stck.top() << std::endl;
+		std::cout << "Stck.size:" << stck.size() << std::endl;
+		for (int i = 0; i < 1000; i++){
+			stck.push(i * 10);
+		}
+		std::cout << "Stck.size:" << stck.size() << std::endl;
+		for (int i = 0; i < 500; i++){
+			stck.pop();
+		}
+		std::cout << "Stck.top:" << stck.top() << std::endl;
+		std::cout << "Stck.size:" << stck.size() << std::endl;
+		std::cout << "Stck.empty: " << stck.empty() << std::endl;
+		for (; stck.size() != 0;){
+			stck.pop();
+		}
+		std::cout << "Stck.size:" << stck.size() << std::endl;
+		std::cout << "Stck.empty: " << stck.empty() << std::endl;
+		stck.push(-123);
+		std::cout << "Stck.top:" << stck.top() << std::endl;
+		std::cout << "Stck.size:" << stck.size() << std::endl;
+		std::cout << "Stck.empty: " << stck.empty() << std::endl;
 	}
+
+	//Map tests
+
+	{
+		std::map<std::string, int> map_default;
+
+		std::cout << "Map_default empty: " << map_default.empty() << std::endl;
+		std::cout << "Map_default size: " << map_default.size() << std::endl;
+		try{
+			std::cout << "Shouldn't be printed" << map_default.at("wrong key");
+		}
+		catch (std::exception &e){
+			e.what();
+		}
+		map_default.insert(std::pair<std::string, int>("Coucou", 123));
+		map_default.insert(std::pair<std::string, int>("123", 123));
+		map_default.insert(std::pair<std::string, int>("Test", 543));
+		map_default.insert(std::pair<std::string, int>("FOO", 987));
+		map_default.insert(std::pair<std::string, int>("BAR", 1230989));
+
+		std::cout << "Map_default empty: " << map_default.empty() << std::endl;
+		std::cout << "Map_default size: " << map_default.size() << std::endl;
+
+		std::map<std::string, int> map_insert;
+		std::map<std::string, int> map_cpy(map_default);
+		std::map<std::string, int> map_assign = map_cpy;
+		map_insert.insert(map_default.begin(), map_default.end());
+
+		std::cout << "Print map_cpy, map_default, map_assign and map_insert by iterator" << std::endl;
+
+		std::map<std::string, int>::iterator it = map_cpy.begin();
+		std::map<std::string, int>::iterator it1 = map_default.begin();
+		std::map<std::string, int>::iterator it3 = map_assign.begin();
+		for (std::map<std::string, int>::iterator it2 = map_insert.begin(); it2 != map_insert.end(); it2++){
+			std::cout << "In map_default: first = " << it1->first << " second = " << it1->second << std::endl;
+			std::cout << "In map_insert: first = " << it2->first << " second = " << it2->second << std::endl;
+			std::cout << "In map_cpy: first = " << it->first << " second = " << it->second << std::endl;
+			std::cout << "In map_assign: first = " << it3->first << " second = " << it3->second << std::endl;
+			it++;
+			it1++;
+			it3++;
+		}
+
+		std::cout << "Print map_cpy, map_default, map_assign and map_insert by const_reverse_iterator" << std::endl;
+
+		std::map<std::string, int>::const_reverse_iterator rit = map_cpy.rbegin();
+		std::map<std::string, int>::const_reverse_iterator rit1 = map_default.rbegin();
+		std::map<std::string, int>::const_reverse_iterator rit3 = map_assign.rbegin();
+		for (std::map<std::string, int>::iterator rit2 = map_insert.begin(); rit2 != map_insert.end(); rit2++){
+			std::cout << "In map_default: first = " << rit1->first << " second = " << rit1->second << std::endl;
+			std::cout << "In map_insert: first = " << rit2->first << " second = " << rit2->second << std::endl;
+			std::cout << "In map_cpy: first = " << rit->first << " second = " << rit->second << std::endl;
+			std::cout << "In map_assign: first = " << rit3->first << " second = " << rit3->second << std::endl;
+			rit++;
+			rit1++;
+			rit3++;
+		}
+
+		std::cout << "Access to [\"wrong key2\"]" << std::endl;
+		std::cout << map_default["wrong key2"] << std::endl;
+		std::cout << map_default["wrong key2"] << std::endl;
+		std::cout << "Access at(\"Coucou\")" << std::endl;
+		std::cout << map_default.at("Coucou") << std::endl;
+
+		std::cout << "map_cpy.empty:" << map_cpy.empty() << std::endl;
+		map_cpy.clear();
+		map_cpy.swap(map_default);
+		std::cout << "map_cpy.empty:" << map_cpy.empty() << std::endl;
+		for (std::map<std::string, int>::const_iterator cit = map_cpy.begin(); cit != map_cpy.end(); cit++){
+			std::cout << "In map_cpy after clear/swap: first = " << cit->first << " second = " << cit->second << std::endl;
+		}
+
+		std::cout << "map_cpy.find(\"Coucou\") = " << map_cpy.find("Coucou")->second << std::endl;
+		std::cout << "map_cpy.find(\"FOO\") = " << map_cpy.find("FOO")->second << std::endl;
+		std::cout << "map_cpy.find(\"Test\") = " << map_cpy.find("Test")->second << std::endl;
+
+		std::cout << "map_cpy.upper_bound(\"Coucou\") = " << map_cpy.upper_bound("Coucou")->second << std::endl;
+		std::cout << "map_cpy.upper_bound(\"FOO\") = " << map_cpy.upper_bound("FOO")->second << std::endl;
+		std::cout << "map_cpy.upper_bound(\"Test\") = " << map_cpy.upper_bound("Test")->second << std::endl;
+	}
+
+
+
+
 
 	// {
 	// 	std::cout << "Vector<int> tests: significant performance tests" << std::endl;

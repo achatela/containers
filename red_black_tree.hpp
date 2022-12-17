@@ -519,7 +519,6 @@ namespace ft{
             iterator insert(ft::pair<const key_type, mapped_type> key){
                 nodePtr node = _alloc.allocate(1);
                 node->parent = NULL;
-                // node->data = key;
                 _alloc_pair.construct(&node->data, key);
                 _alloc_key.construct(&node->first, key.first);
                 _alloc_mapped.construct(&node->second, key.second);

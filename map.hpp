@@ -76,7 +76,6 @@ namespace ft{
 
             map (const map& x): _alloc(x._alloc), _size(x._size), _comparator(x._comparator), _root(_comparator) {
             const_iterator it = x.begin();
-            
                 while (it != x.end()){
                     if (find(it->first) == end())
                         _root.insert(*it);
